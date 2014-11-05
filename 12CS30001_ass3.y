@@ -115,6 +115,7 @@
 %type <rowST>  additive_expression
 %type <rowST>  shift_expression
 %type <rowST>  expression
+%type <rowST>  relational_expression
 
 %%
 primary_expression
@@ -288,27 +289,59 @@ additive_expression
 
 shift_expression
 	: additive_expression
+	{
+		$$ = $1;
+	}
 	| shift_expression LEFT_OP additive_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad(SHLE, $1->name, $3->name, $$->name));	
+	}
 	| shift_expression RIGHT_OP additive_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad(SHRT, $1->name, $3->name, $$->name));
+	}
 	;
 
 relational_expression
 	: shift_expression
+	{
+		$$ = $1;
+	}
 	| relational_expression '<' shift_expression
 	{
-
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		$$->truelist = makeList(quadArray.size());
+		$$->falselist = makeList(quadArray.size() + 1);
+		quadArray.push_back(quad(LET, $1->name, $3->name, $$->name));
 	}
 	| relational_expression '>' shift_expression
 	{
-
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		$$->truelist = makeList(quadArray.size());
+		$$->falselist = makeList(quadArray.size() + 1);
+		quadArray.push_back(quad(GRT, $1->name, $3->name, $$->name));
 	}
 	| relational_expression LE_OP shift_expression
 	{
-
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		$$->truelist = makeList(quadArray.size());
+		$$->falselist = makeList(quadArray.size() + 1);
+		quadArray.push_back(quad(LEQ, $1->name, $3->name, $$->name));	
 	}
 	| relational_expression GE_OP shift_expression
 	{
-
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		$$->truelist = makeList(quadArray.size());
+		$$->falselist = makeList(quadArray.size() + 1);
+		quadArray.push_back(quad(GEQ, $1->name, $3->name, $$->name));	
 	}
 	;
 

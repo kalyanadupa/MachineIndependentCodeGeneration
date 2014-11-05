@@ -12,17 +12,37 @@ using namespace std;
 
 
 void quad::emit(const quad &q){
-	if(op==1890)
-	{
-		
-	}
+
 	if(q.arg2.compare("null") != 0){
-		cout<<q.result<<"="<<q.arg1<<q.op<<q.arg2<<'\n';
+		switch(q.op){
+			case LET:
+				cout<<q.result<<"="<<q.arg1<<" < "<<q.arg2<<'\n';
+				break;
+			case GRT:
+				cout<<q.result<<"="<<q.arg1<<" > "<<q.arg2<<'\n';
+				break;
+			case LEQ:
+				cout<<q.result<<"="<<q.arg1<<" <= "<<q.arg2<<'\n';
+				break;
+			case GEQ:
+				cout<<q.result<<"="<<q.arg1<<" >= "<<q.arg2<<'\n';
+				break;
+			case SHLE:
+				cout<<q.result<<"="<<q.arg1<<" >> "<<q.arg2<<'\n';
+				break;
+			case SHRT:
+				cout<<q.result<<"="<<q.arg1<<" << "<<q.arg2<<'\n';
+				break;
+			default:
+				cout<<q.result<<"="<<q.arg1<<" ";
+				printf("%c ",q.op );
+				cout<<q.arg2<<'\n';	
+		}
 	}
+	
 	else
 		cout<<q.result<<"="<<q.arg1<<"\n";
-	//cout<<q.op<<'\t'<<q.arg1<<'\t'<<q.arg2<<'\t'<<q.result<<'\n';
-	//cout<<q.result<<" = "<<q.arg1<<q.op<<q.arg2<<'\n';
+	
 }
 
 indexList makeList(int i){
