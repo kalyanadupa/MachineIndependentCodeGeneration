@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include "symbolTable.h"
+#include "quad.h"
+#include "y.tab.h"
+#include "iostream"
+extern int yylex();
+extern int yyparse();
+SymbolTable* symtab = new SymbolTable();
+extern char* yytext;
+void yyerror(char *s);
+
+void yyerror(char *s){
+	printf("Syntax error %s\n",s );
+}
+
+main(){
+	freopen("ass5_12CS10001_test.c", "r", stdin);
+	yyparse();
+	//symtab->printTable();
+	printf("hey\n");
+
+}
