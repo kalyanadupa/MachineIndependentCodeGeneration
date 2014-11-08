@@ -533,7 +533,7 @@ direct_declarator
 
 	| direct_declarator '(' parameter_type_list ')'
 	{
-		row* temp = $3->symlook(*$3, "returnValue");
+		row* temp = $3->symlook(*$3, "funcName");
 		temp->update(temp->rowType,temp->pushType(typeSpecifier,-1),offset);
 		typeSpecifier = functionType;
 		global->update($1,$3);
