@@ -14,8 +14,8 @@ enum type {voidType =1,
  charType,
  doubleType,
  pointerType,
- arrayType
-
+ arrayType,
+ functionType
 };
 
 typedef struct initialValue{
@@ -33,7 +33,7 @@ typedef struct ttypeT{
 }typeT;
 
 typedef std::vector<typeT> typeV;
-typedef std::vector<int> indexList;
+typedef std::vector<int>* indexList;
 class row
 {
 public:
@@ -44,6 +44,7 @@ public:
 	typeV rowType;
 	indexList trueList;
 	indexList falseList;
+	indexList nextList;
 	symbolTable* nestedTable; 
 	// typeT *head;
 	// head = NULL;
@@ -73,7 +74,9 @@ public:
 				case arrayType:
 					tSize = 0;
 					break;		
-								
+				case functionType:
+					tSize = 4;
+					break;				
 				tempType.typeSize = -1;
 			}
 			tempType.typeSize = -1;
@@ -119,6 +122,9 @@ public:
 	row* gentemp(symbolTable &curr);
 	void printTable();
 	void update(const string &s,const value val1);
+	void update(row* r, symbolTable *nTable){
+		r->nestedTable = nTable;
+	}
 	
 };
 #endif

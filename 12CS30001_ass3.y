@@ -10,8 +10,8 @@
 	extern void yyerror(char *s);
 	type typeSpecifier;
 	int offset = 0;
-	symbolTable* symtab = new symbolTable();
-	symbolTable* global = symtab;
+	symbolTable* global = new symbolTable();
+	symbolTable* symtab = global;
 	std::vector<quad> quadArray;
 %}
 
@@ -20,6 +20,8 @@
 	row* rowST;
 	vector<row*> *rowVector;
 	typeT typ;
+	vector<int>* nextList;
+	symbolTable* tableType;
 }
 
 
@@ -99,9 +101,8 @@
 %type <rowST> CONSTANT
 %type <rowST> STRING_LITERAL 
 %type <rowVector> identifier_list
-%type <rowVector>  parameter_list
+
 %type <rowST> initializer
-%type <rowST> parameter_declaration  
 %type <rowST> postfix_expression
 %type <rowST> init_declarator
 %type <rowST> direct_declarator
@@ -113,9 +114,12 @@
 %type <rowST>  cast_expression
 %type <rowST>  multiplicative_expression
 %type <rowST>  additive_expression
-%type <rowST>  shift_expression
-%type <rowST>  expression
-%type <rowST>  relational_expression
+%type <rowST>  shift_expression equality_expression
+%type<tableType> parameter_type_list parameter_list
+%type <rowST>  expression N1 
+%type <nextList> statement selection_statement expression_statement
+%type <rowST>  relational_expression 
+%type <intVal> M1 M2 
 
 %%
 primary_expression
@@ -129,8 +133,17 @@ primary_expression
 
 	}
 	| CONSTANT
+	{
+		$$ = $1;
+	}
 	| STRING_LITERAL
+	{
+
+	}
 	| '(' expression ')'
+	{
+		$$ = $2;
+	}
 	;
 
 
@@ -176,7 +189,14 @@ postfix_expression
 	}
 	| postfix_expression '[' expression ']'
 	| postfix_expression '(' ')'
+	{
+		global->printTable();
+
+	}
 	| postfix_expression '(' argument_expression_list ')'
+	{
+		
+	}
 	| postfix_expression '.' id_var
 	| postfix_expression PTR_OP id_var
 	| postfix_expression INC_OP
@@ -315,32 +335,32 @@ relational_expression
 	{
 		$$ = symtab->symbolTable::gentemp(*symtab);
 		$$->update($1);
-		$$->truelist = makeList(quadArray.size());
-		$$->falselist = makeList(quadArray.size() + 1);
+		$$->trueList = makeList(quadArray.size());
+		$$->falseList = makeList(quadArray.size() + 1);
 		quadArray.push_back(quad(LET, $1->name, $3->name, $$->name));
 	}
 	| relational_expression '>' shift_expression
 	{
 		$$ = symtab->symbolTable::gentemp(*symtab);
 		$$->update($1);
-		$$->truelist = makeList(quadArray.size());
-		$$->falselist = makeList(quadArray.size() + 1);
+		$$->trueList = makeList(quadArray.size());
+		$$->falseList = makeList(quadArray.size() + 1);
 		quadArray.push_back(quad(GRT, $1->name, $3->name, $$->name));
 	}
 	| relational_expression LE_OP shift_expression
 	{
 		$$ = symtab->symbolTable::gentemp(*symtab);
 		$$->update($1);
-		$$->truelist = makeList(quadArray.size());
-		$$->falselist = makeList(quadArray.size() + 1);
+		$$->trueList = makeList(quadArray.size());
+		$$->falseList = makeList(quadArray.size() + 1);
 		quadArray.push_back(quad(LEQ, $1->name, $3->name, $$->name));	
 	}
 	| relational_expression GE_OP shift_expression
 	{
 		$$ = symtab->symbolTable::gentemp(*symtab);
 		$$->update($1);
-		$$->truelist = makeList(quadArray.size());
-		$$->falselist = makeList(quadArray.size() + 1);
+		$$->trueList = makeList(quadArray.size());
+		$$->falseList = makeList(quadArray.size() + 1);
 		quadArray.push_back(quad(GEQ, $1->name, $3->name, $$->name));	
 	}
 	;
@@ -348,13 +368,16 @@ relational_expression
 
 equality_expression
 	: relational_expression
+	{
+		$$ = $1;
+	}
 	| equality_expression EQ_OP relational_expression
 	| equality_expression NE_OP relational_expression
 	;
 
 and_expression
 	: equality_expression
-	| and_expression '&' equality_expression
+	| and_expression '&' M1 equality_expression
 	;
 
 exclusive_or_expression
@@ -386,7 +409,10 @@ assignment_expression
 	: conditional_expression
 	| unary_expression assignment_operator assignment_expression
 	{
-		quadArray.push_back(quad($3->name,$1->name));
+		cout<<"in ass expr"<<'\n';
+		//cout<<"unr exp = "<<$1->name<<'\n';
+		cout<<" ass expr = "<<$3->name<<'\n';
+		//quadArray.push_back(quad($3->name,$1->name));
 		$$=$1;
 	}
 	;
@@ -420,6 +446,10 @@ constant_expression
 declaration
 	: declaration_specifiers ';'
 	| declaration_specifiers init_declarator_list ';'
+	{
+		if(typeSpecifier == functionType)
+			symtab = global;
+	}
 	;
 
 declaration_specifiers
@@ -446,6 +476,7 @@ init_declarator
 	{
 		$1->update($3);
 		quadArray.push_back(quad($$->name,$$->name));
+		$$ = $1;
 	}
 	;
 
@@ -501,6 +532,14 @@ direct_declarator
 	}
 
 	| direct_declarator '(' parameter_type_list ')'
+	{
+		row* temp = $3->symlook(*$3, "returnValue");
+		temp->update(temp->rowType,temp->pushType(typeSpecifier,-1),offset);
+		typeSpecifier = functionType;
+		global->update($1,$3);
+		$$ = $1;
+		symtab = $3;
+	}
 	| direct_declarator '(' identifier_list ')'
 	| direct_declarator '(' ')'
 	;
@@ -508,7 +547,6 @@ direct_declarator
 pointer
 	: '*'
 	{
-
 		int tmp = $$->pushType(pointerType,-1);
 	}
 	| '*' pointer
@@ -521,23 +559,32 @@ pointer
 
 
 parameter_type_list
-	: parameter_list
-	| parameter_list ','
+	: 
+	{
+		$$ = new symbolTable();
+	}
+	| parameter_list
+	{
+		$$ = $1;
+	}
 	;
 
 parameter_list
-	: parameter_declaration
-	| parameter_list ',' parameter_declaration
-	
+	: declaration_specifiers declarator
+	{
+		$$ = new symbolTable();
+		row* tmp = symtab->symlook(*$$,yytext);
+		tmp->update(tmp->rowType,tmp->pushType(typeSpecifier,-1),offset);
+	}
+	| parameter_list ',' declaration_specifiers declarator
+	{
+		$$ = $1;
+		row* tmp = symtab->symlook(*$$,yytext);
+		tmp->update(tmp->rowType,tmp->pushType(typeSpecifier,-1),offset);
+	}
 	;
 
-parameter_declaration
-	: declaration_specifiers declarator{
-		$2->pushType(typeSpecifier,-1);
-		$$ = $2;
-	}
-	| declaration_specifiers
-	;
+
 
 identifier_list
 	: id_var
@@ -586,19 +633,13 @@ initializer
 
 
 statement
-	: labeled_statement
-	| compound_statement
+	: compound_statement
 	| expression_statement
 	| selection_statement
 	| iteration_statement
 	| jump_statement
 	;
 
-labeled_statement
-	: id_var ':' statement
-	| CASE constant_expression ':' statement
-	| DEFAULT ':' statement
-	;
 
 compound_statement
 	: '{' '}'
@@ -608,23 +649,42 @@ compound_statement
 block_item_list
 	: block_item
 	| block_item_list block_item
+	;
 
 block_item	
 	: declaration
 	| statement
+	;
 
 expression_statement
 	: ';'
-	| expression ';'
+	| expression_opt ';'
+	{
+		
+		$$ = new vector<int>();
+	}
 
 	;
 
-selection_statement
-	: IF '(' expression ')' statement
-	{
+expression_opt
+    :expression {}
+    |{}
+    ;
 
+selection_statement
+	: IF '(' expression ')' M1 statement
+	{
+		printf("In if \n");
+		backpatch($3->trueList,$5);	
+		$$ = merge($3->falseList,$6);
 	}
-	| IF '(' expression ')' statement ELSE statement
+	| IF '(' expression ')' M1 statement N1 ELSE M1 statement
+	{
+		backpatch($3->trueList,$5);
+		backpatch($3->falseList,$9);
+		vector<int>* tempList = merge($6, $7->nextList);
+		$$ = merge(tempList, $10);
+	}
 	| SWITCH '(' expression ')' statement
 	;
 
@@ -636,10 +696,7 @@ iteration_statement
 	;
 
 jump_statement
-	: GOTO id_var ';'
-	| CONTINUE ';'
-	| BREAK ';'
-	| RETURN ';'
+	: RETURN ';'
 	| RETURN expression ';'
 	;
 
@@ -665,6 +722,25 @@ declaration_list
 	| declaration_list declaration
 	;	
 
+M1
+	:
+	{
+		$$ = quadArray.size();
+	}	
+
+M2
+	:
+	{
+		$$ = quadArray.size();
+	}		
+
+N1
+	:
+	{
+		$$->nextList = makeList(quadArray.size());
+		string x("null");
+		quadArray.push_back(x);
+	}	
 %%
 
 

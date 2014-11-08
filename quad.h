@@ -36,12 +36,25 @@ public:
 		arg2 = "null";
 		result = _arg2;
 	}
+	quad(const string &(_arg1)){
+		op = -1;
+		arg1 = "null";
+		arg2 = "null";
+		result = _arg1;
+	}
 	//void print();
 	void emit(const quad &q);
 };
 
 extern std::vector<quad> quadArray;
 
+indexList makeList(int i);
+
+indexList merge(const vector<int>* p1, const vector<int>* p2);
+
+bool typeCheck(typeV t1,typeV t2);
+
+void backpatch(indexList p1,int index);
 
 
 

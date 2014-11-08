@@ -16,16 +16,16 @@ void quad::emit(const quad &q){
 	if(q.arg2.compare("null") != 0){
 		switch(q.op){
 			case LET:
-				cout<<q.result<<"="<<q.arg1<<" < "<<q.arg2<<'\n';
+				cout<<"if "<<q.arg1<<" < "<<q.arg2<<" goto "<<q.result<<'\n';
 				break;
 			case GRT:
-				cout<<q.result<<"="<<q.arg1<<" > "<<q.arg2<<'\n';
+				cout<<"if "<<q.arg1<<" > "<<q.arg2<<" goto "<<q.result<<'\n';
 				break;
 			case LEQ:
-				cout<<q.result<<"="<<q.arg1<<" <= "<<q.arg2<<'\n';
+				cout<<"if "<<q.arg1<<" <= "<<q.arg2<<" goto "<<q.result<<'\n';
 				break;
 			case GEQ:
-				cout<<q.result<<"="<<q.arg1<<" >= "<<q.arg2<<'\n';
+				cout<<"if "<<q.arg1<<" >= "<<q.arg2<<" goto "<<q.result<<'\n';
 				break;
 			case SHLE:
 				cout<<q.result<<"="<<q.arg1<<" >> "<<q.arg2<<'\n';
@@ -39,26 +39,73 @@ void quad::emit(const quad &q){
 				cout<<q.arg2<<'\n';	
 		}
 	}
+	else if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") == 0))
+		cout<<"goto "<<q.result;
 	
 	else
-		cout<<q.result<<"="<<q.arg1<<"\n";
+		cout<<q.result<<"="<<q.result<<"\n";
 	
 }
 
+
+
+// void quad::emit(const quad &q){
+
+// 	if(q.arg2.compare("null") != 0){
+// 		switch(q.op){
+// 			case LET:
+// 				cout<<q.result<<"="<<q.arg1<<" < "<<q.arg2<<'\n';
+// 				break;
+// 			case GRT:
+// 				cout<<q.result<<"="<<q.arg1<<" > "<<q.arg2<<'\n';
+// 				break;
+// 			case LEQ:
+// 				cout<<q.result<<"="<<q.arg1<<" <= "<<q.arg2<<'\n';
+// 				break;
+// 			case GEQ:
+// 				cout<<q.result<<"="<<q.arg1<<" >= "<<q.arg2<<'\n';
+// 				break;
+// 			case SHLE:
+// 				cout<<q.result<<"="<<q.arg1<<" >> "<<q.arg2<<'\n';
+// 				break;
+// 			case SHRT:
+// 				cout<<q.result<<"="<<q.arg1<<" << "<<q.arg2<<'\n';
+// 				break;
+// 			default:
+// 				cout<<q.result<<"="<<q.arg1<<" ";
+// 				printf("%c ",q.op );
+// 				cout<<q.arg2<<'\n';	
+// 		}
+// 	}
+// 	else if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") == 0))
+// 		cout<<"goto "<<q.result;
+	
+// 	else
+// 		cout<<q.result<<"="<<q.result<<"\n";
+	
+// }
+
+
+
+
 indexList makeList(int i){
-	indexList newList;
-	newList.push_back(i);
+	indexList newList = new std::vector<int>();;
+	if(i == -1){
+		return newList;
+	}
+	newList->push_back(i);
 	return newList;
 }
 
-indexList merge(const indexList &p1, const indexList &p2){
-	indexList newList(p1);
-	// it1 = p1[0]];
-	// std::vector<int>::iterator it2 = p2.begin();
-	// std::vector<int>::iterator it3 = p2.end() ;
-	//newList.insert(p1.begin(),p2.begin(),p2.end());
+indexList merge(const vector<int>* p1, const vector<int>* p2){
+	indexList newList = new vector<int>(*p1);
+	for(int i = 0; i< p2->size();i++){
+		newList->push_back((*p2)[i]);
+	}
 	return newList;
-
+	// p1.insert( p1.end(), p2.begin(), p2.end() );
+	// //vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+	// return p1;
 }
 
 
@@ -77,14 +124,14 @@ bool typeCheck(typeV t1,typeV t2){
 
 }
 
-void backpatch(const indexList &p,int index)
+void backpatch(indexList p,int index)
 {
-	for (int i = 0; i < p.size(); i++){
+	for (int i = 0; i < p->size(); i++){
 		char word[20];
 		sprintf(word, "%d",index);
-		quad q = quadArray[p[i]];
+		quad q = quadArray[(*p)[i]];
 		q.result = word;
-		quadArray[p[i]] = q;
+		quadArray[(*p)[i]] = q;
 	}
 }
 
