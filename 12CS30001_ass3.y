@@ -117,7 +117,7 @@
 %type <rowST>  shift_expression equality_expression
 %type<tableType> parameter_type_list parameter_list
 %type <rowST>  expression N1 
-%type <nextList> statement selection_statement expression_statement
+%type <nextList> statement selection_statement expression_statement iteration_statement
 %type <rowST>  relational_expression 
 %type <intVal> M1 M2 
 
@@ -689,10 +689,27 @@ selection_statement
 	;
 
 iteration_statement
-	: WHILE '(' expression ')' statement
-	| DO statement WHILE '(' expression ')' ';'
+	: WHILE M1 '(' expression ')' M1 statement
+	{	
+		backpatch($7,$2);
+		backpatch($4->trueList,$6);
+		$$ = $4->falseList;
+		stringstream ss;
+		ss << $2;
+		string str = ss.str();
+		quadArray.push_back(quad(str));
+	}
+	| DO M1 statement M1 WHILE '(' expression ')' ';'
+	{
+		backpatch($7->trueList,$2);
+		backpatch($3,$4);
+		$$ = $7->falseList;
+	}
 	| FOR '(' expression_statement expression_statement ')' statement
 	| FOR '(' expression_statement expression_statement expression ')' statement
+	{
+
+	}
 	;
 
 jump_statement
