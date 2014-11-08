@@ -123,6 +123,8 @@
 %type <intVal> M1 M2 
 %type <charVal> unary_operator
 
+%nonassoc HIGH
+
 %%
 primary_expression
 	: id_var	
@@ -309,7 +311,9 @@ additive_expression
 	| additive_expression '+' multiplicative_expression
 	{
 		$$ = symtab->symbolTable::gentemp(*symtab);
+		cout<<"generated temp = "<<$$->name<<'\n'; 
 		$$->update($1);
+		
 		quadArray.push_back(quad('+',$1->name,$3->name,$$->name));		
 	}
 	| additive_expression '-' multiplicative_expression
@@ -319,6 +323,7 @@ additive_expression
 		quadArray.push_back(quad('-',$1->name,$3->name,$$->name));	
 	}
 	;
+
 
 
 shift_expression
@@ -693,13 +698,16 @@ compound_statement
 	| '{' block_item_list_opt '}'
 	{
 		$$ = $2;
+
 	}
 	;
 
 block_item_list_opt
 	: block_item_list
 	{
+		backpatch($1,quadArray.size());
 		$$ = $1;
+
 	}
 	|
 	{
@@ -744,19 +752,20 @@ expression_opt
     ;
 
 selection_statement
-	: IF '(' expression ')' M1 statement
+	:IF '(' expression ')' M1 %prec HIGH statement N1 ELSE M1 statement
 	{
-		printf("In if \n");
-		backpatch($3->trueList,$5);	
-		$$ = merge($3->falseList,$6);
-	}
-	| IF '(' expression ')' M1 statement N1 ELSE M1 statement
-	{
+		cout<<"in if else"<<'\n';
 		backpatch($3->trueList,$5);
 		backpatch($3->falseList,$9);
 		vector<int>* tempList = merge($6, $7->nextList);
 		$$ = merge(tempList, $10);
-	}
+	} 
+	|IF '(' expression ')' M1 statement
+	{
+		printf("In if \n");
+		backpatch($3->trueList,$5);	
+		$$ = merge($3->falseList,$6);
+	} 
 	| SWITCH '(' expression ')' statement
 	;
 

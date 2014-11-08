@@ -59,7 +59,7 @@ indexList merge(const vector<int>* p1, const vector<int>* p2);
 bool typeCheck(typeV t1,typeV t2);
 
 void backpatch(indexList p1,int index);
-void printTCG(std::vector<quad> &quadArray);
+void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray);
 
 
 

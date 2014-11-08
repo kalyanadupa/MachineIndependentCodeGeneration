@@ -189,59 +189,70 @@ int retSize(const typeV &t){
 }
 
 
-void printTCG(std::vector<quad> &quadArray){
+void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
+	int j = 0;
+	for(int i = tcgArray.size()-1; i > -1;i --){
+		tcg t = tcgArray[i];
+		j = j - t.size;
+		cout<<"_"<<t.name<<"$ = "<<j<<'\n';
+	}
+	cout<<"main:"<<'\n';
+	cout<<"    "<<"pushl %ebp"<<'\n';
+	cout<<"    "<<"movl %ebp, %ebp"<<'\n';
+	j = j*-1;
+	cout<<"    "<<"movl $"<<j<<", %esp"<<'\n';
 	for(int i = 0;i < quadArray.size();i++){
 		quad q = quadArray[i];
 		if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
 			if(isdigit(q.arg1[0])){
 				//cout<<'\n'<<"CS 1"<<'\n';
-				cout<<'\t'<<"movl $"<<q.arg1<<", _"<<q.result<<"$[ebp]"<<'\n';
+				cout<<"    "<<"movl $"<<q.arg1<<", _"<<q.result<<"$[ebp]"<<'\n';
 			}
 			else if((q.arg1[0])== '-'){
 				//cout<<'\n'<<"CS 3"<<'\n';
-				cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-				cout<<'\t'<<"negl "<<"%eax"<<'\n';
-				cout<<'\t'<<"movl %eax, _"<<q.result<<"$[ebp]"<<'\n';			
+				cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+				cout<<"    "<<"negl "<<"%eax"<<'\n';
+				cout<<"    "<<"movl %eax, _"<<q.result<<"$[ebp]"<<'\n';			
 			}
 			else{
 				//cout<<'\n'<<'\n'<<'\n'<<"CS 2"<<'\n';
-				cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-				cout<<'\t'<<"movl _"<<q.result<<"$[ebp], "<<"%eax"<<'\n';
+				cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+				cout<<"    "<<"movl _"<<q.result<<"$[ebp], "<<"%eax"<<'\n';
 			}
 		}
 		if((q.arg2.compare("null") != 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
 			switch(q.op){
 				case '+':
 					//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
-					cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"addl _"<<q.arg2<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"addl _"<<q.arg2<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
 					break;
 				case '-':
 					//cout<<'\n'<<"CS 5"<<'\n';
-					cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"subl _"<<q.arg2<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"subl _"<<q.arg2<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
 					break;
 				case '*':
 					//cout<<'\n'<<"CS 6"<<'\n';
-					cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"imull _"<<q.arg2<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"imull _"<<q.arg2<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
 					break;
 				case '/':
 					//cout<<'\n'<<'\n'<<"CS 7"<<'\n';
-					cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"cltd"<<'\n';
-					cout<<'\t'<<"idiv _"<<q.arg2<<"$[ebp]"<<'\n';
-					cout<<'\t'<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"cltd"<<'\n';
+					cout<<"    "<<"idiv _"<<q.arg2<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
 					break;
 				case '%':
 					//cout<<'\n'<<"CS 8"<<'\n';
-					cout<<'\t'<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
-					cout<<'\t'<<"cltd"<<'\n';
-					cout<<'\t'<<"idiv _"<<q.arg2<<"$[ebp]"<<'\n';
-					cout<<'\t'<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$[ebp], "<<"%eax"<<'\n';
+					cout<<"    "<<"cltd"<<'\n';
+					cout<<"    "<<"idiv _"<<q.arg2<<"$[ebp]"<<'\n';
+					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$[ebp]"<<'\n';
 					break;				
 			}			
 		}

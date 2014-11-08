@@ -5,33 +5,16 @@
 main:
 	pushl	%ebp
 	movl	%esp, %ebp
-	subl	$16, %esp
-	movl	$5, -12(%ebp)
-	movl	-8(%ebp), %eax
-	movl	%eax, -12(%ebp)
-	movl	-8(%ebp), %eax
-	negl	%eax
-	movl	%eax, -12(%ebp)
-	movl	-4(%ebp), %eax
-	movl	-8(%ebp), %edx
-	addl	%edx, %eax
-	movl	%eax, -12(%ebp)
-	movl	-4(%ebp), %eax
-	movl	-8(%ebp), %edx
-	subl	%eax, %edx
-	movl	%edx, %eax
-	movl	%eax, -12(%ebp)
-	movl	-8(%ebp), %eax
-	imull	-4(%ebp), %eax
-	movl	%eax, -12(%ebp)
-	movl	-8(%ebp), %eax
-	cltd
-	idivl	-4(%ebp)
-	movl	%eax, -12(%ebp)
-	movl	-8(%ebp), %eax
-	cltd
-	idivl	-4(%ebp)
-	movl	%edx, -12(%ebp)
+	andl	$-8, %esp
+	subl	$20, %esp
+	fldl	12(%esp)
+	fnstcw	2(%esp)
+	movzwl	2(%esp), %eax
+	movb	$12, %ah
+	movw	%ax, (%esp)
+	fldcw	(%esp)
+	fistpl	8(%esp)
+	fldcw	2(%esp)
 	leave
 	ret
 	.size	main, .-main

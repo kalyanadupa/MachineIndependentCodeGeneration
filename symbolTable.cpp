@@ -122,12 +122,55 @@ int getSize(row r){
 } 
 
 
+int symbolTable::tcgTable(std::vector<tcg> &tcgArray){
+	int off = 0;
+	for(int i =0;i < v.size();i++){
+		tcg t;
+		row r = v.at(i);
+		if(r.name.compare("main") != 0){
+		//cout<<r.name<<'\t';
+		t.name = r.name;
+		switch(getType(r.rowType)){
+				case voidType:
+					t.type = "void";
+					break;
+				case charType:
+					t.type = "char";
+					break;
+				case intType:
+					t.type = "int";
+					break;	
+				case doubleType:
+					t.type = "double";
+					break;
+				case pointerType:
+					t.type = "pointer";
+					break;
+				case arrayType:
+					t.type = "array";
+					break;								
+			}
+		//cout<<'\t'<<r.size <<'\t';
+		t.size = r.size;	
+		//cout<<offsetST<<'\t';
+		//cout<<'\n';
+		off = off + r.size;
+		//check the type
+		//cout<<r.name<<' '<<r.type<<' '<<r.val<<' '<<r.size<<' 'r.offset<< '\n';
+		//cout<<r.name<<' '<<r.val<<' '<<r.size<<' 'r.offset<< '\n';
+	}
+	tcgArray.push_back(t);
+	}
+	return off;
+}
+
 void symbolTable::printTable(){
 	cout<<"SYMBOL TABLE"<<'\n';
 	cout<<"----------------------------------------------------------"<<'\n';
 	cout<<"NAME"<<'\t'<<"TYPE"<<'\t'<<"SIZE"<<'\t'<<"OFFSET"<<'\n';
 	cout<<"----------------------------------------------------------"<<'\n';
 	for(int i =0;i < v.size();i++){
+		tcg t;
 		row r = v.at(i);
 		if(r.name.compare("main") != 0){
 		cout<<r.name<<'\t';
@@ -151,10 +194,11 @@ void symbolTable::printTable(){
 					cout<<"array";
 					break;								
 			}
-		cout<<'\t'<<getSize(r)<<'\t';
+		cout<<'\t'<<r.size <<'\t';
+
 		cout<<offsetST<<'\t';
 		cout<<'\n';
-		offsetST = offsetST + getSize(r);
+		offsetST = offsetST + r.size;
 		//check the type
 		//cout<<r.name<<' '<<r.type<<' '<<r.val<<' '<<r.size<<' 'r.offset<< '\n';
 		//cout<<r.name<<' '<<r.val<<' '<<r.size<<' 'r.offset<< '\n';

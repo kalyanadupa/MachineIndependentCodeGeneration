@@ -25,6 +25,13 @@ typedef struct initialValue{
 }value;  
  
 
+typedef struct _tcg{
+	string name;
+	string type;
+	int size;
+	//_typeT *next;
+}tcg;
+
 
 typedef struct ttypeT{
 	type t;
@@ -100,8 +107,11 @@ public:
 		offset = tOffset;
 	}
     void update(const row *r){
+    	printf("in update row r\n");
     	rowType = r->rowType;
+    	printf("r.sizr = %d\n", r->size);
     	this->size = r->size;
+    	printf("r.sizr = %d\n", this->size);
     }
 
     void update(symbolTable* funcST){
@@ -121,10 +131,11 @@ public:
 	row* symlook(symbolTable &curr,const string &s);
 	row* gentemp(symbolTable &curr);
 	void printTable();
+	int tcgTable(std::vector<tcg> &tcgArray);
 	void update(const string &s,const value val1);
 	void update(row* r, symbolTable *nTable){
 		r->nestedTable = nTable;
 	}
-	
+
 };
 #endif
