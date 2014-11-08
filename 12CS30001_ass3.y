@@ -185,6 +185,8 @@ CONSTANT
 	;
 
 
+
+
 postfix_expression
 	: primary_expression
 	{
@@ -229,6 +231,7 @@ postfix_expression
 	}
 	;
 
+
 argument_expression_list
 	: assignment_expression
 	{
@@ -252,6 +255,7 @@ unary_expression
 	}
 	;
 
+
 unary_operator
 	: '&'
 	| '*'
@@ -260,6 +264,7 @@ unary_operator
 	| '~'
 	| '!'
 	;
+
 
 cast_expression
 	: unary_expression
@@ -334,6 +339,7 @@ shift_expression
 		quadArray.push_back(quad(SHRT, $1->name, $3->name, $$->name));
 	}
 	;
+
 
 relational_expression
 	: shift_expression
@@ -437,6 +443,8 @@ assignment_expression
 	}
 	;
 
+
+
 assignment_operator
 	: '='
 	| MUL_ASSIGN
@@ -451,6 +459,7 @@ assignment_operator
 	| OR_ASSIGN
 	;
 
+
 expression
 	: assignment_expression
 	{
@@ -459,12 +468,14 @@ expression
 	| expression ',' assignment_expression
 	;
 
+
 constant_expression
 	: conditional_expression
 	{
 		$$ = $1;
 	}
 	;
+
 
 declaration
 	: declaration_specifiers ';'
@@ -475,6 +486,7 @@ declaration
 	}
 	;
 
+
 declaration_specifiers
 	: type_specifier{
 		$$ = $1;
@@ -482,10 +494,12 @@ declaration_specifiers
 	| type_specifier declaration_specifiers
 	;
 
+
 init_declarator_list
 	: init_declarator
 	| init_declarator_list ',' init_declarator
 	;
+
 
 init_declarator
 	: declarator
@@ -513,6 +527,7 @@ type_specifier
 	| DOUBLE{ typeSpecifier = doubleType;  }
 	;
 
+
 specifier_qualifier_list
 	: type_specifier specifier_qualifier_list
 	| type_specifier
@@ -533,6 +548,7 @@ declarator
 		$$ = $1;
 	}
 	;
+
 
 direct_declarator
 	: id_var
@@ -568,6 +584,7 @@ direct_declarator
 	| direct_declarator '(' ')'
 	;
 
+
 pointer
 	: '*'
 	{
@@ -592,6 +609,7 @@ parameter_type_list
 		$$ = $1;
 	}
 	;
+
 
 parameter_list
 	: declaration_specifiers declarator
@@ -623,6 +641,7 @@ identifier_list
 	}
 	;
 
+
 type_name
 	: specifier_qualifier_list
 	;
@@ -634,10 +653,13 @@ designation
 designator_list
 	: designator 
 	| designator_list designator
+	;
 
 designator
 	: '[' constant_expression ']'
 	| '.' id_var 
+	;
+
 
 id_var
 	: IDENTIFIER
@@ -647,6 +669,7 @@ id_var
 
 	}
 	;
+
 
 initializer
 	: assignment_expression
@@ -772,6 +795,7 @@ jump_statement
 	}
 	;
 
+
 translation_unit
 	: external_declaration
 	| translation_unit external_declaration
@@ -794,6 +818,7 @@ declaration_list
 	| declaration_list declaration
 	;	
 
+
 M1
 	:
 	{
@@ -813,6 +838,7 @@ N1
 		string x("null");
 		quadArray.push_back(quad(GOTOV,"..."));
 	}	
+
 %%
 
 

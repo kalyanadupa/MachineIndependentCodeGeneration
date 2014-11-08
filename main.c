@@ -29,6 +29,7 @@ main(){
 		cout<<i<<'\t';
 		q.emit(q);
 	}
+	printTCG(quadArray);
 	
 
 }
