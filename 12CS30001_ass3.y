@@ -17,6 +17,7 @@
 
 %union{
 	int intVal;
+	char charVal;
 	row* rowST;
 	vector<row*> *rowVector;
 	typeT typ;
@@ -100,15 +101,14 @@
 %type <rowST> id_var
 %type <rowST> CONSTANT
 %type <rowST> STRING_LITERAL 
-%type <rowVector> identifier_list
-
-%type <rowST> initializer
+%type <rowVector> identifier_list argument_expression_list
+%type <rowST> initializer constant_expression
 %type <rowST> postfix_expression
 %type <rowST> init_declarator
 %type <rowST> direct_declarator
 %type <rowST> primary_expression
 %type <rowST> declarator
-%type <rowST> assignment_expression
+%type <rowST> assignment_expression conditional_expression
 %type <rowST> pointer
 %type <rowST> unary_expression
 %type <rowST>  cast_expression
@@ -117,9 +117,11 @@
 %type <rowST>  shift_expression equality_expression
 %type<tableType> parameter_type_list parameter_list
 %type <rowST>  expression N1 
-%type <nextList> statement selection_statement expression_statement iteration_statement
+%type <nextList> statement selection_statement expression_statement iteration_statement compound_statement
+%type <nextList> block_item_list block_item_list_opt block_item
 %type <rowST>  relational_expression 
 %type <intVal> M1 M2 
+%type <charVal> unary_operator
 
 %%
 primary_expression
@@ -127,7 +129,7 @@ primary_expression
 	{
 		$$ = $1;
 		//$$ = symtab->symbolTable::symlook(*symtab,$$->name);
-		$$->update($$->rowType,$$->pushType(typeSpecifier,-1),offset);
+		//$$->update($$->rowType,$$->pushType(typeSpecifier,-1),offset);
 		//quadArray.push_back(quad($$->name,$$->name));
 		printf("here with %s \n",$$->name.c_str());
 
@@ -161,7 +163,7 @@ CONSTANT
 	| CHARACTER_CONSTANT
 	{
 		$$ = symtab->symbolTable::gentemp(*symtab);
-		$$->update($$->rowType,$$->pushType(intType, -1),offset);
+		$$->update($$->rowType,$$->pushType(charType, -1),offset);
 		offset = offset +1;
 		char *temp=strdup(yytext);
 		temp++;
@@ -179,7 +181,7 @@ CONSTANT
 		$$->val.d=atof(yytext);
 		quadArray.push_back(quad(yytext,$$->name));		
 	}
-
+	;
 
 
 postfix_expression
@@ -191,11 +193,20 @@ postfix_expression
 	| postfix_expression '(' ')'
 	{
 		global->printTable();
-
+		symbolTable *temp = global->symlook(*global,$1->name)->nestedTable;
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad(CALL,$1->name));
 	}
 	| postfix_expression '(' argument_expression_list ')'
 	{
-		
+		symbolTable *temp = global->symlook(*global,$1->name)->nestedTable;
+		for(int i = 0;i < $3->size();i++)
+			quadArray.push_back(quad(PARAM,(*$3)[i]->name));
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad(CALL,$1->name));	
+
 	}
 	| postfix_expression '.' id_var
 	| postfix_expression PTR_OP id_var
@@ -219,29 +230,24 @@ postfix_expression
 
 argument_expression_list
 	: assignment_expression
+	{
+		
+		$$ = new vector<row*>();
+		$$->push_back($1);
+	}
 	| argument_expression_list ',' assignment_expression
+	{
+		$$ =$1;
+		$$->push_back($3);
+	}
 	;
 
-unary_expression			
+
+
+unary_expression
 	: postfix_expression
 	{
-		$$ = $1;	
-	}
-	| INC_OP unary_expression
-	{	
-		string x("1");
-		quadArray.push_back(quad('+',$2->name,x,$2->name));	
-	}
-	| DEC_OP unary_expression
-	{	
-		string x("1");
-		quadArray.push_back(quad('-',$2->name,x,$2->name));	
-	}
-	| unary_operator cast_expression
-	{
-		$$ = symtab->symbolTable::gentemp(*symtab);
-		$$->update($2);
-		//quadArray.push_back(quad($1->name,$$->name,$2->name));
+	    $$ = $1;
 	}
 	;
 
@@ -289,6 +295,7 @@ multiplicative_expression
 	}
 	;
 
+
 additive_expression
 	: multiplicative_expression{
 		$$ = $1;	
@@ -306,6 +313,7 @@ additive_expression
 		quadArray.push_back(quad('-',$1->name,$3->name,$$->name));	
 	}
 	;
+
 
 shift_expression
 	: additive_expression
@@ -337,7 +345,8 @@ relational_expression
 		$$->update($1);
 		$$->trueList = makeList(quadArray.size());
 		$$->falseList = makeList(quadArray.size() + 1);
-		quadArray.push_back(quad(LET, $1->name, $3->name, $$->name));
+		quadArray.push_back(quad(LET, $1->name, $3->name, "...."));
+		quadArray.push_back(quad(GOTOV,"..."));
 	}
 	| relational_expression '>' shift_expression
 	{
@@ -345,7 +354,8 @@ relational_expression
 		$$->update($1);
 		$$->trueList = makeList(quadArray.size());
 		$$->falseList = makeList(quadArray.size() + 1);
-		quadArray.push_back(quad(GRT, $1->name, $3->name, $$->name));
+		quadArray.push_back(quad(GRT, $1->name, $3->name, "...."));
+		quadArray.push_back(quad(GOTOV,"..."));
 	}
 	| relational_expression LE_OP shift_expression
 	{
@@ -353,7 +363,8 @@ relational_expression
 		$$->update($1);
 		$$->trueList = makeList(quadArray.size());
 		$$->falseList = makeList(quadArray.size() + 1);
-		quadArray.push_back(quad(LEQ, $1->name, $3->name, $$->name));	
+		quadArray.push_back(quad(LEQ, $1->name, $3->name, "...."));	
+		quadArray.push_back(quad(GOTOV,"..."));	
 	}
 	| relational_expression GE_OP shift_expression
 	{
@@ -361,8 +372,9 @@ relational_expression
 		$$->update($1);
 		$$->trueList = makeList(quadArray.size());
 		$$->falseList = makeList(quadArray.size() + 1);
-		quadArray.push_back(quad(GEQ, $1->name, $3->name, $$->name));	
-	}
+		quadArray.push_back(quad(GEQ, $1->name, $3->name, "...."));	
+		quadArray.push_back(quad(GOTOV,"..."));	
+	}	
 	;
 
 
@@ -374,6 +386,7 @@ equality_expression
 	| equality_expression EQ_OP relational_expression
 	| equality_expression NE_OP relational_expression
 	;
+
 
 and_expression
 	: equality_expression
@@ -405,14 +418,19 @@ conditional_expression
 	| logical_or_expression '?' expression ':' conditional_expression
 	;
 
+
+
 assignment_expression
 	: conditional_expression
+	{
+		$$ = $1;
+	}
 	| unary_expression assignment_operator assignment_expression
 	{
 		cout<<"in ass expr"<<'\n';
 		//cout<<"unr exp = "<<$1->name<<'\n';
 		cout<<" ass expr = "<<$3->name<<'\n';
-		//quadArray.push_back(quad($3->name,$1->name));
+		quadArray.push_back(quad($3->name,$1->name));
 		$$=$1;
 	}
 	;
@@ -441,6 +459,9 @@ expression
 
 constant_expression
 	: conditional_expression
+	{
+		$$ = $1;
+	}
 	;
 
 declaration
@@ -467,15 +488,16 @@ init_declarator_list
 init_declarator
 	: declarator
 	{
-		$$ = $1;
+		
 		$$->update($$->rowType,$$->pushType(typeSpecifier, -1),offset);
+		$$ = $1;
 		offset = offset + $$->pushType(typeSpecifier, -1);
 
 	}
 	| declarator '=' initializer
 	{
-		$1->update($3);
-		quadArray.push_back(quad($$->name,$$->name));
+		$$->update($$->rowType,$$->pushType(typeSpecifier, -1),offset);
+		quadArray.push_back(quad($1->name,$3->name));
 		$$ = $1;
 	}
 	;
@@ -533,7 +555,7 @@ direct_declarator
 
 	| direct_declarator '(' parameter_type_list ')'
 	{
-		row* temp = $3->symlook(*$3, "funcName");
+		row* temp = $3->symlook(*$3, "retValue");
 		temp->update(temp->rowType,temp->pushType(typeSpecifier,-1),offset);
 		typeSpecifier = functionType;
 		global->update($1,$3);
@@ -643,27 +665,52 @@ statement
 
 compound_statement
 	: '{' '}'
-	| '{' block_item_list '}'
+	| '{' block_item_list_opt '}'
+	{
+		$$ = $2;
+	}
+	;
+
+block_item_list_opt
+	: block_item_list
+	{
+		$$ = $1;
+	}
+	|
+	{
+		$$ = new vector<int>();
+	} 
 	;
 
 block_item_list
 	: block_item
-	| block_item_list block_item
+	{
+		$$ = $1;
+	}
+	| block_item_list M1 block_item
+	{
+		backpatch($1,$2);
+		$$ = $3;
+	}
 	;
 
 block_item	
 	: declaration
+	{
+		$$ = new vector<int>();
+	}
 	| statement
+	{
+		$$ = $1;
+	}
 	;
 
 expression_statement
 	: ';'
 	| expression_opt ';'
 	{
-		
 		$$ = new vector<int>();
 	}
-
 	;
 
 expression_opt
@@ -697,7 +744,7 @@ iteration_statement
 		stringstream ss;
 		ss << $2;
 		string str = ss.str();
-		quadArray.push_back(quad(str));
+		quadArray.push_back(quad(GOTOV,str));
 	}
 	| DO M1 statement M1 WHILE '(' expression ')' ';'
 	{
@@ -714,7 +761,13 @@ iteration_statement
 
 jump_statement
 	: RETURN ';'
+	{
+		quadArray.push_back(quad(RETURNV,"..."));
+	}
 	| RETURN expression ';'
+	{
+		quadArray.push_back(quad(RETURNV,$2->name));
+	}
 	;
 
 translation_unit
@@ -756,7 +809,7 @@ N1
 	{
 		$$->nextList = makeList(quadArray.size());
 		string x("null");
-		quadArray.push_back(x);
+		quadArray.push_back(quad(GOTOV,x));
 	}	
 %%
 

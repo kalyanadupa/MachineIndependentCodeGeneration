@@ -39,8 +39,23 @@ void quad::emit(const quad &q){
 				cout<<q.arg2<<'\n';	
 		}
 	}
-	else if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") == 0))
-		cout<<"goto "<<q.result;
+	else if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") == 0)){
+		switch(q.op){
+			case GOTOV:
+				cout<<"goto "<<q.result<<'\n' ;
+				break;
+			case CALL:
+				cout<<"call "<<q.result<<'\n' ;
+				break;
+			case PARAM:
+				cout<<"param "<<q.result<<'\n';
+				break;		
+			case RETURNV:
+				cout<<"return "<<q.result<<'\n';
+				break;		
+		}
+	}
+		
 	
 	else
 		cout<<q.result<<"="<<q.result<<"\n";

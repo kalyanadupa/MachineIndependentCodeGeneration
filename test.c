@@ -1,10 +1,10 @@
 int main()
 {
-	int a,b = 3;	
-	a = 2;
-	a = 6+7*8;
-	if(5 < 6) 3
-	while(i) i = q
+	int a,b;
+	char c;
+	double d;
+	d = b + c;
+	a = 3;
+	if(a < b) d = 1 ;
 }
 
-//int function(int x, int y)

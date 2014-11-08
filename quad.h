@@ -11,7 +11,11 @@ enum{
 	LEQ,
 	GEQ,
 	SHLE,
-	SHRT
+	SHRT,
+	GOTOV,
+	PARAM,
+	RETURNV,
+	CALL
 };
 
 class quad{
@@ -36,8 +40,8 @@ public:
 		arg2 = "null";
 		result = _arg2;
 	}
-	quad(const string &(_arg1)){
-		op = -1;
+	quad(int _op,const string &(_arg1)){
+		op = op;
 		arg1 = "null";
 		arg2 = "null";
 		result = _arg1;
