@@ -149,6 +149,7 @@ primary_expression
 	;
 
 
+
 CONSTANT
 	: INTEGER_CONSTANT
 	{
@@ -231,7 +232,7 @@ postfix_expression
 argument_expression_list
 	: assignment_expression
 	{
-		
+
 		$$ = new vector<row*>();
 		$$->push_back($1);
 	}
@@ -428,7 +429,8 @@ assignment_expression
 	| unary_expression assignment_operator assignment_expression
 	{
 		cout<<"in ass expr"<<'\n';
-		//cout<<"unr exp = "<<$1->name<<'\n';
+		cout<<"ass1 exp = "<<$$->name<<'\n';
+		cout<<"unr exp = "<<$1->name<<'\n';
 		cout<<" ass expr = "<<$3->name<<'\n';
 		quadArray.push_back(quad($3->name,$1->name));
 		$$=$1;
@@ -809,7 +811,7 @@ N1
 	{
 		$$->nextList = makeList(quadArray.size());
 		string x("null");
-		quadArray.push_back(quad(GOTOV,x));
+		quadArray.push_back(quad(GOTOV,"..."));
 	}	
 %%
 

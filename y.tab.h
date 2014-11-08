@@ -185,6 +185,7 @@ typedef union YYSTYPE
 #line 18 "12CS30001_ass3.y"
 
 	int intVal;
+	char charVal;
 	row* rowST;
 	vector<row*> *rowVector;
 	typeT typ;
@@ -193,7 +194,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 197 "y.tab.h"
+#line 198 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

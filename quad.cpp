@@ -58,7 +58,7 @@ void quad::emit(const quad &q){
 		
 	
 	else
-		cout<<q.result<<"="<<q.result<<"\n";
+		cout<<q.result<<"="<<q.arg1<<"\n";
 	
 }
 
