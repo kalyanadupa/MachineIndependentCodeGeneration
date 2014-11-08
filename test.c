@@ -1,7 +1,11 @@
 int main()
 {
-	int a;
-	double b;
+	int a,b,c;
 	a = b;
+	a = b+c;
+	a = b-c;
+	a = b*c;
+	a = b/c;
+	a = b%c;
 }
 
