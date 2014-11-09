@@ -12,7 +12,9 @@
 	int offset = 0;
 	symbolTable* global = new symbolTable();
 	symbolTable* symtab = global;
-	std::vector<quad> quadArray;
+	extern std::vector<quad> quadArray;
+	
+
 %}
 
 %union{
@@ -138,6 +140,7 @@ M1
 N1
 	:
 	{
+		$$ = symtab->symbolTable::gentemp(*symtab);	
 		$$->nextList = makeList(quadArray.size());
 		string x("null");
 		quadArray.push_back(quad(GOTOV,"..."));
@@ -376,7 +379,7 @@ relational_expression
 		$$->trueList = makeList(quadArray.size());
 		$$->falseList = makeList(quadArray.size() + 1);
 		quadArray.push_back(quad(LET, $1->name, $3->name, "...."));
-		quadArray.push_back(quad(GOTOV,"..."));
+		quadArray.push_back(quad(GOTOV,"null"));
 	}
 	| relational_expression '>' shift_expression
 	{
@@ -459,9 +462,11 @@ assignment_expression
 	{
 		cout<<"in ass expr"<<'\n';
 		cout<<"ass1 exp = "<<$$->name<<'\n';
+		string str1 = $$->name;
 		cout<<"unr exp = "<<$1->name<<'\n';
 		cout<<" ass expr = "<<$3->name<<'\n';
-		quadArray.push_back(quad($3->name,$1->name));
+		string str2 = $3->name;
+		quadArray.push_back(quad(str2,str1));
 		$$=$1;
 	}
 	;

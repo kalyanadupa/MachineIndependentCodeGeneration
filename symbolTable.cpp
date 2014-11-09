@@ -7,6 +7,7 @@ extern symbolTable* symtab;
 int offsetST =0 ;
 
 symbolTable::symbolTable():count(0),offset(0){
+	this->v.reserve(1000);
 }
 
 row* symbolTable::gentemp(symbolTable &curr){

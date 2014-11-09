@@ -7,7 +7,7 @@ extern int yylex();
 extern int yyparse();
 extern int lineCount;
 extern symbolTable* symtab;
-extern std::vector<quad> quadArray;
+std::vector<quad> quadArray;
 
 extern char* yytext;
 void yyerror(char *s);
@@ -17,6 +17,7 @@ void yyerror(char *s){
 }
 
 main(){
+	quadArray.reserve(10000);
 	std::vector<tcg> tcgArray;
 	freopen("test.c", "r", stdin);
 	yyparse();
@@ -29,8 +30,8 @@ main(){
 	cout<<"----------------------------------------------------------"<<'\n';
 	
 	for(int i = 0;i < quadArray.size();i++){
-		quad q  = quadArray[i];
 		cout<<i<<'\t';
+		quad q  = quadArray[i];
 		q.emit(q);
 	}
 	cout<<"    "<<".file   \"test.c\""<<'\n';

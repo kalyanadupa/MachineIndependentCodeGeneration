@@ -35,6 +35,7 @@ public:
 		result = _arg2;
 	}
 	quad(const string &(_arg1),const string &(_arg2)){
+		cout<<"allocating quad  "<<_arg1<<" = "<<_arg2<<'\n';
 		op = '=';
 		arg1 = _arg1;
 		arg2 = "null";

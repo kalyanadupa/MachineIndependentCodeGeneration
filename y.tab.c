@@ -78,10 +78,12 @@
 	int offset = 0;
 	symbolTable* global = new symbolTable();
 	symbolTable* symtab = global;
-	std::vector<quad> quadArray;
+	extern std::vector<quad> quadArray;
+	
+
 
 /* Line 371 of yacc.c  */
-#line 85 "y.tab.c"
+#line 87 "y.tab.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -255,7 +257,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 18 "12CS30001_ass3.y"
+#line 20 "12CS30001_ass3.y"
 
 	int intVal;
 	char charVal;
@@ -267,7 +269,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 271 "y.tab.c"
+#line 273 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -295,7 +297,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 299 "y.tab.c"
+#line 301 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -653,20 +655,20 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   134,   134,   140,   148,   157,   161,   165,   174,   184,
-     196,   211,   215,   216,   224,   234,   235,   236,   244,   256,
-     262,   272,   290,   294,   300,   304,   310,   316,   326,   329,
-     337,   348,   352,   358,   368,   372,   381,   390,   399,   412,
-     416,   417,   422,   423,   427,   428,   432,   433,   437,   438,
-     442,   443,   447,   448,   454,   458,   472,   473,   474,   475,
-     476,   477,   478,   479,   480,   481,   482,   487,   491,   504,
-     505,   514,   517,   522,   523,   528,   536,   547,   548,   549,
-     550,   555,   556,   564,   569,   577,   581,   586,   592,   597,
-     606,   607,   612,   616,   627,   630,   638,   644,   655,   660,
-     669,   688,   698,   706,   707,   708,   709,   710,   715,   716,
-     724,   731,   737,   741,   749,   753,   760,   761,   768,   769,
-     773,   781,   787,   791,   801,   807,   808,   822,   826,   834,
-     835,   839,   840,   844,   845,   846,   847,   851,   852
+       0,   136,   136,   142,   151,   160,   164,   168,   177,   187,
+     199,   214,   218,   219,   227,   237,   238,   239,   247,   259,
+     265,   275,   293,   297,   303,   307,   313,   319,   329,   332,
+     340,   351,   355,   361,   371,   375,   384,   393,   402,   415,
+     419,   420,   425,   426,   430,   431,   435,   436,   440,   441,
+     445,   446,   450,   451,   457,   461,   477,   478,   479,   480,
+     481,   482,   483,   484,   485,   486,   487,   492,   496,   509,
+     510,   519,   522,   527,   528,   533,   541,   552,   553,   554,
+     555,   560,   561,   569,   574,   582,   586,   591,   597,   602,
+     611,   612,   617,   621,   632,   635,   643,   649,   660,   665,
+     674,   693,   703,   711,   712,   713,   714,   715,   720,   721,
+     729,   736,   742,   746,   754,   758,   765,   766,   773,   774,
+     778,   786,   792,   796,   806,   812,   813,   827,   831,   839,
+     840,   844,   845,   849,   850,   851,   852,   856,   857
 };
 #endif
 
@@ -1766,7 +1768,7 @@ yyreduce:
     {
         case 2:
 /* Line 1787 of yacc.c  */
-#line 134 "12CS30001_ass3.y"
+#line 136 "12CS30001_ass3.y"
     {
 		(yyval.intVal) = quadArray.size();
 	}
@@ -1774,8 +1776,9 @@ yyreduce:
 
   case 3:
 /* Line 1787 of yacc.c  */
-#line 140 "12CS30001_ass3.y"
+#line 142 "12CS30001_ass3.y"
     {
+		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);	
 		(yyval.rowST)->nextList = makeList(quadArray.size());
 		string x("null");
 		quadArray.push_back(quad(GOTOV,"..."));
@@ -1784,7 +1787,7 @@ yyreduce:
 
   case 4:
 /* Line 1787 of yacc.c  */
-#line 149 "12CS30001_ass3.y"
+#line 152 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 		//$$ = symtab->symbolTable::symlook(*symtab,$$->name);
@@ -1797,7 +1800,7 @@ yyreduce:
 
   case 5:
 /* Line 1787 of yacc.c  */
-#line 158 "12CS30001_ass3.y"
+#line 161 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -1805,7 +1808,7 @@ yyreduce:
 
   case 6:
 /* Line 1787 of yacc.c  */
-#line 162 "12CS30001_ass3.y"
+#line 165 "12CS30001_ass3.y"
     {
 
 	}
@@ -1813,7 +1816,7 @@ yyreduce:
 
   case 7:
 /* Line 1787 of yacc.c  */
-#line 166 "12CS30001_ass3.y"
+#line 169 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(2) - (3)].rowST);
 	}
@@ -1821,7 +1824,7 @@ yyreduce:
 
   case 8:
 /* Line 1787 of yacc.c  */
-#line 175 "12CS30001_ass3.y"
+#line 178 "12CS30001_ass3.y"
     {
 		printf("integr constant seen %s\n",yytext);
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);	
@@ -1835,7 +1838,7 @@ yyreduce:
 
   case 9:
 /* Line 1787 of yacc.c  */
-#line 185 "12CS30001_ass3.y"
+#line 188 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyval.rowST)->rowType,(yyval.rowST)->pushType(charType, -1),offset);
@@ -1851,7 +1854,7 @@ yyreduce:
 
   case 10:
 /* Line 1787 of yacc.c  */
-#line 197 "12CS30001_ass3.y"
+#line 200 "12CS30001_ass3.y"
     {
 		printf("float constant seen %s\n",yytext);
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
@@ -1864,7 +1867,7 @@ yyreduce:
 
   case 11:
 /* Line 1787 of yacc.c  */
-#line 212 "12CS30001_ass3.y"
+#line 215 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);	
 	}
@@ -1872,7 +1875,7 @@ yyreduce:
 
   case 13:
 /* Line 1787 of yacc.c  */
-#line 217 "12CS30001_ass3.y"
+#line 220 "12CS30001_ass3.y"
     {
 		global->printTable();
 		symbolTable *temp = global->symlook(*global,(yyvsp[(1) - (3)].rowST)->name)->nestedTable;
@@ -1884,7 +1887,7 @@ yyreduce:
 
   case 14:
 /* Line 1787 of yacc.c  */
-#line 225 "12CS30001_ass3.y"
+#line 228 "12CS30001_ass3.y"
     {
 		symbolTable *temp = global->symlook(*global,(yyvsp[(1) - (4)].rowST)->name)->nestedTable;
 		for(int i = 0;i < (yyvsp[(3) - (4)].rowVector)->size();i++)
@@ -1898,7 +1901,7 @@ yyreduce:
 
   case 17:
 /* Line 1787 of yacc.c  */
-#line 237 "12CS30001_ass3.y"
+#line 240 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (2)].rowST));
@@ -1910,7 +1913,7 @@ yyreduce:
 
   case 18:
 /* Line 1787 of yacc.c  */
-#line 245 "12CS30001_ass3.y"
+#line 248 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (2)].rowST));
@@ -1922,7 +1925,7 @@ yyreduce:
 
   case 19:
 /* Line 1787 of yacc.c  */
-#line 257 "12CS30001_ass3.y"
+#line 260 "12CS30001_ass3.y"
     {
 
 		(yyval.rowVector) = new vector<row*>();
@@ -1932,7 +1935,7 @@ yyreduce:
 
   case 20:
 /* Line 1787 of yacc.c  */
-#line 263 "12CS30001_ass3.y"
+#line 266 "12CS30001_ass3.y"
     {
 		(yyval.rowVector) =(yyvsp[(1) - (3)].rowVector);
 		(yyval.rowVector)->push_back((yyvsp[(3) - (3)].rowST));
@@ -1941,7 +1944,7 @@ yyreduce:
 
   case 21:
 /* Line 1787 of yacc.c  */
-#line 273 "12CS30001_ass3.y"
+#line 276 "12CS30001_ass3.y"
     {
 	    (yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -1949,7 +1952,7 @@ yyreduce:
 
   case 22:
 /* Line 1787 of yacc.c  */
-#line 291 "12CS30001_ass3.y"
+#line 294 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);	
 	}
@@ -1957,7 +1960,7 @@ yyreduce:
 
   case 24:
 /* Line 1787 of yacc.c  */
-#line 301 "12CS30001_ass3.y"
+#line 304 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);	
 	}
@@ -1965,7 +1968,7 @@ yyreduce:
 
   case 25:
 /* Line 1787 of yacc.c  */
-#line 305 "12CS30001_ass3.y"
+#line 308 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -1975,7 +1978,7 @@ yyreduce:
 
   case 26:
 /* Line 1787 of yacc.c  */
-#line 311 "12CS30001_ass3.y"
+#line 314 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -1985,7 +1988,7 @@ yyreduce:
 
   case 27:
 /* Line 1787 of yacc.c  */
-#line 317 "12CS30001_ass3.y"
+#line 320 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -1995,7 +1998,7 @@ yyreduce:
 
   case 28:
 /* Line 1787 of yacc.c  */
-#line 326 "12CS30001_ass3.y"
+#line 329 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);	
 	}
@@ -2003,7 +2006,7 @@ yyreduce:
 
   case 29:
 /* Line 1787 of yacc.c  */
-#line 330 "12CS30001_ass3.y"
+#line 333 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		cout<<"generated temp = "<<(yyval.rowST)->name<<'\n'; 
@@ -2015,7 +2018,7 @@ yyreduce:
 
   case 30:
 /* Line 1787 of yacc.c  */
-#line 338 "12CS30001_ass3.y"
+#line 341 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -2025,7 +2028,7 @@ yyreduce:
 
   case 31:
 /* Line 1787 of yacc.c  */
-#line 349 "12CS30001_ass3.y"
+#line 352 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2033,7 +2036,7 @@ yyreduce:
 
   case 32:
 /* Line 1787 of yacc.c  */
-#line 353 "12CS30001_ass3.y"
+#line 356 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -2043,7 +2046,7 @@ yyreduce:
 
   case 33:
 /* Line 1787 of yacc.c  */
-#line 359 "12CS30001_ass3.y"
+#line 362 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -2053,7 +2056,7 @@ yyreduce:
 
   case 34:
 /* Line 1787 of yacc.c  */
-#line 369 "12CS30001_ass3.y"
+#line 372 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2061,20 +2064,20 @@ yyreduce:
 
   case 35:
 /* Line 1787 of yacc.c  */
-#line 373 "12CS30001_ass3.y"
+#line 376 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
 		(yyval.rowST)->trueList = makeList(quadArray.size());
 		(yyval.rowST)->falseList = makeList(quadArray.size() + 1);
 		quadArray.push_back(quad(LET, (yyvsp[(1) - (3)].rowST)->name, (yyvsp[(3) - (3)].rowST)->name, "...."));
-		quadArray.push_back(quad(GOTOV,"..."));
+		quadArray.push_back(quad(GOTOV,"null"));
 	}
     break;
 
   case 36:
 /* Line 1787 of yacc.c  */
-#line 382 "12CS30001_ass3.y"
+#line 385 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -2087,7 +2090,7 @@ yyreduce:
 
   case 37:
 /* Line 1787 of yacc.c  */
-#line 391 "12CS30001_ass3.y"
+#line 394 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -2100,7 +2103,7 @@ yyreduce:
 
   case 38:
 /* Line 1787 of yacc.c  */
-#line 400 "12CS30001_ass3.y"
+#line 403 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symbolTable::gentemp(*symtab);
 		(yyval.rowST)->update((yyvsp[(1) - (3)].rowST));
@@ -2113,7 +2116,7 @@ yyreduce:
 
   case 39:
 /* Line 1787 of yacc.c  */
-#line 413 "12CS30001_ass3.y"
+#line 416 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2121,7 +2124,7 @@ yyreduce:
 
   case 54:
 /* Line 1787 of yacc.c  */
-#line 455 "12CS30001_ass3.y"
+#line 458 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2129,20 +2132,22 @@ yyreduce:
 
   case 55:
 /* Line 1787 of yacc.c  */
-#line 459 "12CS30001_ass3.y"
+#line 462 "12CS30001_ass3.y"
     {
 		cout<<"in ass expr"<<'\n';
 		cout<<"ass1 exp = "<<(yyval.rowST)->name<<'\n';
+		string str1 = (yyval.rowST)->name;
 		cout<<"unr exp = "<<(yyvsp[(1) - (3)].rowST)->name<<'\n';
 		cout<<" ass expr = "<<(yyvsp[(3) - (3)].rowST)->name<<'\n';
-		quadArray.push_back(quad((yyvsp[(3) - (3)].rowST)->name,(yyvsp[(1) - (3)].rowST)->name));
+		string str2 = (yyvsp[(3) - (3)].rowST)->name;
+		quadArray.push_back(quad(str2,str1));
 		(yyval.rowST)=(yyvsp[(1) - (3)].rowST);
 	}
     break;
 
   case 67:
 /* Line 1787 of yacc.c  */
-#line 488 "12CS30001_ass3.y"
+#line 493 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2150,7 +2155,7 @@ yyreduce:
 
   case 70:
 /* Line 1787 of yacc.c  */
-#line 506 "12CS30001_ass3.y"
+#line 511 "12CS30001_ass3.y"
     {
 		if(typeSpecifier == functionType)
 			symtab = global;
@@ -2159,7 +2164,7 @@ yyreduce:
 
   case 71:
 /* Line 1787 of yacc.c  */
-#line 514 "12CS30001_ass3.y"
+#line 519 "12CS30001_ass3.y"
     {
 		(yyval.intVal) = (yyvsp[(1) - (1)].intVal);
 	}
@@ -2167,7 +2172,7 @@ yyreduce:
 
   case 75:
 /* Line 1787 of yacc.c  */
-#line 529 "12CS30001_ass3.y"
+#line 534 "12CS30001_ass3.y"
     {
 		
 		(yyval.rowST)->update((yyval.rowST)->rowType,(yyval.rowST)->pushType(typeSpecifier, -1),offset);
@@ -2179,7 +2184,7 @@ yyreduce:
 
   case 76:
 /* Line 1787 of yacc.c  */
-#line 537 "12CS30001_ass3.y"
+#line 542 "12CS30001_ass3.y"
     {
 		(yyval.rowST)->update((yyval.rowST)->rowType,(yyval.rowST)->pushType(typeSpecifier, -1),offset);
 		quadArray.push_back(quad((yyvsp[(1) - (3)].rowST)->name,(yyvsp[(3) - (3)].rowST)->name));
@@ -2189,31 +2194,31 @@ yyreduce:
 
   case 77:
 /* Line 1787 of yacc.c  */
-#line 547 "12CS30001_ass3.y"
+#line 552 "12CS30001_ass3.y"
     { typeSpecifier = voidType;  }
     break;
 
   case 78:
 /* Line 1787 of yacc.c  */
-#line 548 "12CS30001_ass3.y"
+#line 553 "12CS30001_ass3.y"
     { typeSpecifier = charType;  }
     break;
 
   case 79:
 /* Line 1787 of yacc.c  */
-#line 549 "12CS30001_ass3.y"
+#line 554 "12CS30001_ass3.y"
     { typeSpecifier = intType;  }
     break;
 
   case 80:
 /* Line 1787 of yacc.c  */
-#line 550 "12CS30001_ass3.y"
+#line 555 "12CS30001_ass3.y"
     { typeSpecifier = doubleType;  }
     break;
 
   case 83:
 /* Line 1787 of yacc.c  */
-#line 565 "12CS30001_ass3.y"
+#line 570 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(2) - (2)].rowST);
 		(yyval.rowST)->pushType(pointerType, -1);
@@ -2222,7 +2227,7 @@ yyreduce:
 
   case 84:
 /* Line 1787 of yacc.c  */
-#line 570 "12CS30001_ass3.y"
+#line 575 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2230,7 +2235,7 @@ yyreduce:
 
   case 85:
 /* Line 1787 of yacc.c  */
-#line 578 "12CS30001_ass3.y"
+#line 583 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (1)].rowST);
 	}
@@ -2238,7 +2243,7 @@ yyreduce:
 
   case 86:
 /* Line 1787 of yacc.c  */
-#line 582 "12CS30001_ass3.y"
+#line 587 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(2) - (3)].rowST);
 	}
@@ -2246,7 +2251,7 @@ yyreduce:
 
   case 87:
 /* Line 1787 of yacc.c  */
-#line 587 "12CS30001_ass3.y"
+#line 592 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (4)].rowST);
 		//printf("in array typ");
@@ -2256,7 +2261,7 @@ yyreduce:
 
   case 88:
 /* Line 1787 of yacc.c  */
-#line 593 "12CS30001_ass3.y"
+#line 598 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(1) - (3)].rowST);
 	}
@@ -2264,7 +2269,7 @@ yyreduce:
 
   case 89:
 /* Line 1787 of yacc.c  */
-#line 598 "12CS30001_ass3.y"
+#line 603 "12CS30001_ass3.y"
     {
 		row* temp = (yyvsp[(3) - (4)].tableType)->symlook(*(yyvsp[(3) - (4)].tableType), "retValue");
 		temp->update(temp->rowType,temp->pushType(typeSpecifier,-1),offset);
@@ -2277,7 +2282,7 @@ yyreduce:
 
   case 92:
 /* Line 1787 of yacc.c  */
-#line 613 "12CS30001_ass3.y"
+#line 618 "12CS30001_ass3.y"
     {
 		int tmp = (yyval.rowST)->pushType(pointerType,-1);
 	}
@@ -2285,7 +2290,7 @@ yyreduce:
 
   case 93:
 /* Line 1787 of yacc.c  */
-#line 617 "12CS30001_ass3.y"
+#line 622 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = (yyvsp[(2) - (2)].rowST);
 		int tmp = (yyval.rowST)->pushType(pointerType,-1);
@@ -2294,7 +2299,7 @@ yyreduce:
 
   case 94:
 /* Line 1787 of yacc.c  */
-#line 627 "12CS30001_ass3.y"
+#line 632 "12CS30001_ass3.y"
     {
 		(yyval.tableType) = new symbolTable();
 	}
@@ -2302,7 +2307,7 @@ yyreduce:
 
   case 95:
 /* Line 1787 of yacc.c  */
-#line 631 "12CS30001_ass3.y"
+#line 636 "12CS30001_ass3.y"
     {
 		(yyval.tableType) = (yyvsp[(1) - (1)].tableType);
 	}
@@ -2310,7 +2315,7 @@ yyreduce:
 
   case 96:
 /* Line 1787 of yacc.c  */
-#line 639 "12CS30001_ass3.y"
+#line 644 "12CS30001_ass3.y"
     {
 		(yyval.tableType) = new symbolTable();
 		row* tmp = symtab->symlook(*(yyval.tableType),yytext);
@@ -2320,7 +2325,7 @@ yyreduce:
 
   case 97:
 /* Line 1787 of yacc.c  */
-#line 645 "12CS30001_ass3.y"
+#line 650 "12CS30001_ass3.y"
     {
 		(yyval.tableType) = (yyvsp[(1) - (4)].tableType);
 		row* tmp = symtab->symlook(*(yyval.tableType),yytext);
@@ -2330,7 +2335,7 @@ yyreduce:
 
   case 98:
 /* Line 1787 of yacc.c  */
-#line 656 "12CS30001_ass3.y"
+#line 661 "12CS30001_ass3.y"
     {
 		(yyval.rowVector) = new vector<row*>();
 		(yyval.rowVector)->push_back((yyvsp[(1) - (1)].rowST));
@@ -2339,7 +2344,7 @@ yyreduce:
 
   case 99:
 /* Line 1787 of yacc.c  */
-#line 661 "12CS30001_ass3.y"
+#line 666 "12CS30001_ass3.y"
     {
 		(yyval.rowVector) = (yyvsp[(1) - (3)].rowVector);
 		(yyval.rowVector)->push_back((yyvsp[(3) - (3)].rowST));
@@ -2348,7 +2353,7 @@ yyreduce:
 
   case 101:
 /* Line 1787 of yacc.c  */
-#line 689 "12CS30001_ass3.y"
+#line 694 "12CS30001_ass3.y"
     {
 		(yyval.rowST) = symtab->symlook(*symtab,yytext);
 		(yyval.rowST)->update((yyval.rowST)->rowType,(yyval.rowST)->pushType(typeSpecifier,-1),offset);
@@ -2358,7 +2363,7 @@ yyreduce:
 
   case 102:
 /* Line 1787 of yacc.c  */
-#line 699 "12CS30001_ass3.y"
+#line 704 "12CS30001_ass3.y"
     {
 		(yyval.rowST)=(yyvsp[(1) - (1)].rowST);
 	}
@@ -2366,7 +2371,7 @@ yyreduce:
 
   case 109:
 /* Line 1787 of yacc.c  */
-#line 717 "12CS30001_ass3.y"
+#line 722 "12CS30001_ass3.y"
     {
 		(yyval.nextList) = (yyvsp[(2) - (3)].nextList);
 
@@ -2375,7 +2380,7 @@ yyreduce:
 
   case 110:
 /* Line 1787 of yacc.c  */
-#line 725 "12CS30001_ass3.y"
+#line 730 "12CS30001_ass3.y"
     {
 		backpatch((yyvsp[(1) - (1)].nextList),quadArray.size());
 		(yyval.nextList) = (yyvsp[(1) - (1)].nextList);
@@ -2385,7 +2390,7 @@ yyreduce:
 
   case 111:
 /* Line 1787 of yacc.c  */
-#line 731 "12CS30001_ass3.y"
+#line 736 "12CS30001_ass3.y"
     {
 		(yyval.nextList) = new vector<int>();
 	}
@@ -2393,7 +2398,7 @@ yyreduce:
 
   case 112:
 /* Line 1787 of yacc.c  */
-#line 738 "12CS30001_ass3.y"
+#line 743 "12CS30001_ass3.y"
     {
 		(yyval.nextList) = (yyvsp[(1) - (1)].nextList);
 	}
@@ -2401,7 +2406,7 @@ yyreduce:
 
   case 113:
 /* Line 1787 of yacc.c  */
-#line 742 "12CS30001_ass3.y"
+#line 747 "12CS30001_ass3.y"
     {
 		backpatch((yyvsp[(1) - (3)].nextList),(yyvsp[(2) - (3)].intVal));
 		(yyval.nextList) = (yyvsp[(3) - (3)].nextList);
@@ -2410,7 +2415,7 @@ yyreduce:
 
   case 114:
 /* Line 1787 of yacc.c  */
-#line 750 "12CS30001_ass3.y"
+#line 755 "12CS30001_ass3.y"
     {
 		(yyval.nextList) = new vector<int>();
 	}
@@ -2418,7 +2423,7 @@ yyreduce:
 
   case 115:
 /* Line 1787 of yacc.c  */
-#line 754 "12CS30001_ass3.y"
+#line 759 "12CS30001_ass3.y"
     {
 		(yyval.nextList) = (yyvsp[(1) - (1)].nextList);
 	}
@@ -2426,7 +2431,7 @@ yyreduce:
 
   case 117:
 /* Line 1787 of yacc.c  */
-#line 762 "12CS30001_ass3.y"
+#line 767 "12CS30001_ass3.y"
     {
 		(yyval.nextList) = new vector<int>();
 	}
@@ -2434,19 +2439,19 @@ yyreduce:
 
   case 118:
 /* Line 1787 of yacc.c  */
-#line 768 "12CS30001_ass3.y"
+#line 773 "12CS30001_ass3.y"
     {}
     break;
 
   case 119:
 /* Line 1787 of yacc.c  */
-#line 769 "12CS30001_ass3.y"
+#line 774 "12CS30001_ass3.y"
     {}
     break;
 
   case 120:
 /* Line 1787 of yacc.c  */
-#line 774 "12CS30001_ass3.y"
+#line 779 "12CS30001_ass3.y"
     {
 		cout<<"in if else"<<'\n';
 		backpatch((yyvsp[(3) - (10)].rowST)->trueList,(yyvsp[(5) - (10)].intVal));
@@ -2458,7 +2463,7 @@ yyreduce:
 
   case 121:
 /* Line 1787 of yacc.c  */
-#line 782 "12CS30001_ass3.y"
+#line 787 "12CS30001_ass3.y"
     {
 		printf("In if \n");
 		backpatch((yyvsp[(3) - (6)].rowST)->trueList,(yyvsp[(5) - (6)].intVal));	
@@ -2468,7 +2473,7 @@ yyreduce:
 
   case 123:
 /* Line 1787 of yacc.c  */
-#line 792 "12CS30001_ass3.y"
+#line 797 "12CS30001_ass3.y"
     {	
 		backpatch((yyvsp[(7) - (7)].nextList),(yyvsp[(2) - (7)].intVal));
 		backpatch((yyvsp[(4) - (7)].rowST)->trueList,(yyvsp[(6) - (7)].intVal));
@@ -2482,7 +2487,7 @@ yyreduce:
 
   case 124:
 /* Line 1787 of yacc.c  */
-#line 802 "12CS30001_ass3.y"
+#line 807 "12CS30001_ass3.y"
     {
 		backpatch((yyvsp[(7) - (9)].rowST)->trueList,(yyvsp[(2) - (9)].intVal));
 		backpatch((yyvsp[(3) - (9)].nextList),(yyvsp[(4) - (9)].intVal));
@@ -2492,7 +2497,7 @@ yyreduce:
 
   case 126:
 /* Line 1787 of yacc.c  */
-#line 809 "12CS30001_ass3.y"
+#line 814 "12CS30001_ass3.y"
     {
 		backpatch((yyvsp[(6) - (13)].rowST)->trueList, (yyvsp[(12) - (13)].intVal));
 		backpatch((yyvsp[(10) - (13)].rowST)->nextList,(yyvsp[(5) - (13)].intVal));
@@ -2507,7 +2512,7 @@ yyreduce:
 
   case 127:
 /* Line 1787 of yacc.c  */
-#line 823 "12CS30001_ass3.y"
+#line 828 "12CS30001_ass3.y"
     {
 		quadArray.push_back(quad(RETURNV,"..."));
 	}
@@ -2515,7 +2520,7 @@ yyreduce:
 
   case 128:
 /* Line 1787 of yacc.c  */
-#line 827 "12CS30001_ass3.y"
+#line 832 "12CS30001_ass3.y"
     {
 		quadArray.push_back(quad(RETURNV,(yyvsp[(2) - (3)].rowST)->name));
 	}
@@ -2523,7 +2528,7 @@ yyreduce:
 
 
 /* Line 1787 of yacc.c  */
-#line 2527 "y.tab.c"
+#line 2532 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2755,7 +2760,7 @@ yyreturn:
 
 
 /* Line 2050 of yacc.c  */
-#line 857 "12CS30001_ass3.y"
+#line 862 "12CS30001_ass3.y"
 
 
 
