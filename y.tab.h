@@ -108,7 +108,8 @@ extern int yydebug;
      AND_OP = 317,
      OR_OP = 318,
      OR_ASSIGN = 319,
-     ENUMERATION_CONSTANT = 320
+     ENUMERATION_CONSTANT = 320,
+     HIGH = 321
    };
 #endif
 /* Tokens.  */
@@ -175,6 +176,7 @@ extern int yydebug;
 #define OR_OP 318
 #define OR_ASSIGN 319
 #define ENUMERATION_CONSTANT 320
+#define HIGH 321
 
 
 
@@ -194,7 +196,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 198 "y.tab.h"
+#line 200 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

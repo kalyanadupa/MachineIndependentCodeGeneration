@@ -52,7 +52,7 @@ void quad::emit(const quad &q){
 				break;		
 			case RETURNV:
 				cout<<"return "<<q.result<<'\n';
-				break;		
+				break;	
 		}
 	}
 		
@@ -144,9 +144,9 @@ void backpatch(indexList p,int index)
 	for (int i = 0; i < p->size(); i++){
 		char word[20];
 		sprintf(word, "%d",index);
-		quad q = quadArray[(*p)[i]];
-		q.result = word;
-		quadArray[(*p)[i]] = q;
+		//quad q = quadArray[(*p)[i]];
+		//q.result = word;
+		quadArray[(*p)[i]].result = word;
 	}
 }
 
@@ -191,7 +191,7 @@ int retSize(const typeV &t){
 
 void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 	int j = 0;
-	for(int i = tcgArray.size()-1; i > -1;i --){
+	for(int i = tcgArray.size()-1; i > 0;i --){
 		tcg t = tcgArray[i];
 		j = j - t.size;
 		cout<<"_"<<t.name<<"$ = "<<j<<'\n';

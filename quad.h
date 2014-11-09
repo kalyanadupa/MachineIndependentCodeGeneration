@@ -41,7 +41,7 @@ public:
 		result = _arg2;
 	}
 	quad(int _op,const string &(_arg1)){
-		op = op;
+		op = _op;
 		arg1 = "null";
 		arg2 = "null";
 		result = _arg1;

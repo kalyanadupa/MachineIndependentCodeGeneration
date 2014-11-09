@@ -120,12 +120,28 @@
 %type <nextList> statement selection_statement expression_statement iteration_statement compound_statement
 %type <nextList> block_item_list block_item_list_opt block_item
 %type <rowST>  relational_expression 
-%type <intVal> M1 M2 
+%type <intVal> M1
 %type <charVal> unary_operator
 
 %nonassoc HIGH
 
 %%
+
+M1
+	:
+	{
+		$$ = quadArray.size();
+	}	
+
+N1
+	:
+	{
+		$$->nextList = makeList(quadArray.size());
+		string x("null");
+		quadArray.push_back(quad(GOTOV,"..."));
+	}	
+
+
 primary_expression
 	: id_var	
 	{
@@ -828,25 +844,6 @@ declaration_list
 	;	
 
 
-M1
-	:
-	{
-		$$ = quadArray.size();
-	}	
-
-M2
-	:
-	{
-		$$ = quadArray.size();
-	}		
-
-N1
-	:
-	{
-		$$->nextList = makeList(quadArray.size());
-		string x("null");
-		quadArray.push_back(quad(GOTOV,"..."));
-	}	
 
 %%
 
