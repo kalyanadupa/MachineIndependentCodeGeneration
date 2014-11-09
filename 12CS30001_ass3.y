@@ -108,7 +108,7 @@
 %type <rowST> direct_declarator
 %type <rowST> primary_expression
 %type <rowST> declarator
-%type <rowST> assignment_expression conditional_expression
+%type <rowST> assignment_expression conditional_expression expression_opt
 %type <rowST> pointer
 %type <rowST> unary_expression
 %type <rowST>  cast_expression
@@ -116,8 +116,10 @@
 %type <rowST>  additive_expression
 %type <rowST>  shift_expression equality_expression
 %type<tableType> parameter_type_list parameter_list
-%type <rowST>  expression N1 
-%type <nextList> statement selection_statement expression_statement iteration_statement compound_statement
+%type <rowST>  expression  N1
+%type <nextList> statement selection_statement 
+%type <nextList> expression_statement iteration_statement 
+%type <nextList> compound_statement
 %type <nextList> block_item_list block_item_list_opt block_item
 %type <rowST>  relational_expression 
 %type <intVal> M1
@@ -803,9 +805,16 @@ iteration_statement
 		$$ = $7->falseList;
 	}
 	| FOR '(' expression_statement expression_statement ')' statement
-	| FOR '(' expression_statement expression_statement expression ')' statement
+	| FOR '(' expression ';' M1 expression ';' M1 expression N1 ')' M1 statement
 	{
-
+		backpatch($6->trueList, $12);
+		backpatch($10->nextList,$5);
+		backpatch($13,$8);
+		stringstream ss;
+		ss << $8;
+		string str = ss.str();
+		quadArray.push_back(quad(GOTOV,str));
+		$$ = $6->falseList;
 	}
 	;
 
