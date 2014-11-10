@@ -40,6 +40,7 @@ main(){
 	cout<<"    "<<".type   main, @function"<<'\n';
 	
 	printTCG(quadArray,tcgArray);
+	cout<<".L"<<quadArray.size()<<':'<<'\n';
 	cout<<"    "<<"leave"<<'\n';
 	cout<<"    "<<"ret"<<'\n';
 

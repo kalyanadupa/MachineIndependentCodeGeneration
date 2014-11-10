@@ -33,6 +33,14 @@ void quad::emit(const quad &q){
 			case SHRT:
 				cout<<q.result<<"="<<q.arg1<<" << "<<q.arg2<<'\n';
 				break;
+			case UP:
+				
+				cout<<q.result<<"="<<q.arg1<<"<<'+'<< 1"<<'\n';
+				break;
+			case UM:
+				cout<<q.result<<"="<<q.arg1<<"<<'-'<< 1"<<'\n';
+				break;
+				
 			default:
 				cout<<q.result<<"="<<q.arg1<<" ";
 				printf("%c ",q.op );
@@ -203,8 +211,20 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 					cout<<"    "<<"jge .L"<<q.result<<'\n';
 					break;
 				case GRT:
+					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"jle .L"<<q.result<<'\n';
+					break;
 				case LEQ:
+					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"jg .L"<<q.result<<'\n';
+					break;
 				case GEQ:
+					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"jl .L"<<q.result<<'\n';
+					break;
 				case GOTOV:
 					cout<<"    "<<"jmp .L"<<q.result<<'\n';
 					gotoArray.push_back(q.result);
@@ -263,7 +283,19 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 						cout<<"    "<<"cltd"<<'\n';
 						cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
 						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
-						break;				
+						break;
+					case 'UP':
+						//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"addl _"<<"$1, "<<"%eax"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;
+					case 'UM':
+						//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"subl _"<<"$1, "<<"%eax"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;						
 				}			
 			}
 		}

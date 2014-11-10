@@ -17,6 +17,8 @@ enum{
 	RETURNV,
 	EQOP,
 	NEQOP,
+	UP,
+	UM,
 	CALL
 };
 

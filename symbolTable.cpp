@@ -152,10 +152,13 @@ int symbolTable::tcgTable(std::vector<tcg> &tcgArray){
 					break;								
 			}
 		//cout<<'\t'<<r.size <<'\t';
-		t.size = r.size;	
+		if(r.size > 10 )
+			t.size = 4;
+		else			
+			t.size = r.size;	
 		//cout<<offsetST<<'\t';
 		//cout<<'\n';
-		off = off + r.size;
+		off = off + t.size;
 		//check the type
 		//cout<<r.name<<' '<<r.type<<' '<<r.val<<' '<<r.size<<' 'r.offset<< '\n';
 		//cout<<r.name<<' '<<r.val<<' '<<r.size<<' 'r.offset<< '\n';
@@ -195,6 +198,8 @@ void symbolTable::printTable(){
 					cout<<"array";
 					break;								
 			}
+		if(r.size > 10)
+			r.size = 4;	
 		cout<<'\t'<<r.size <<'\t';
 
 		cout<<offsetST<<'\t';

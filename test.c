@@ -4,11 +4,13 @@ int main()
 	if(a < b){
 		a = 2;
 	}
-	else{
-		c = 3;
-		i = c;
+	if(a > b){
+		b = 3;
 	}
-	for(i = 0;i < a; i++){
-		c = i + 3;
+	if(a >= b){
+		b = 4;
+	}
+	if(a <= b){
+		b = 5;
 	}
 }

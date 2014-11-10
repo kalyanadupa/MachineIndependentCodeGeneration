@@ -244,7 +244,7 @@ postfix_expression
 		quadArray.push_back(quad($$->name,$1->name));
 		string x("1");
 		quadArray.push_back(quad($1->name,$$->name));
-		quadArray.push_back(quad('+',$$->name,x,$1->name));
+		quadArray.push_back(quad(UP,$$->name,x,$1->name));
 	}
 	| postfix_expression DEC_OP
 	{
@@ -253,7 +253,7 @@ postfix_expression
 		quadArray.push_back(quad($$->name,$1->name));
 		string x("1");
 		quadArray.push_back(quad($1->name,$$->name));
-		quadArray.push_back(quad('-',$$->name,x,$1->name));
+		quadArray.push_back(quad(UM,$$->name,x,$1->name));
 	}
 	;
 
