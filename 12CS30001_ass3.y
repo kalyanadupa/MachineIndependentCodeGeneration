@@ -111,6 +111,7 @@
 %type <rowST> primary_expression
 %type <rowST> declarator
 %type <rowST> assignment_expression conditional_expression expression_opt
+%type <rowST>  and_expression exclusive_or_expression inclusive_or_expression logical_and_expression logical_or_expression 
 %type <rowST> pointer
 %type <rowST> unary_expression
 %type <rowST>  cast_expression
@@ -242,7 +243,8 @@ postfix_expression
 		$$->update($1);
 		quadArray.push_back(quad($$->name,$1->name));
 		string x("1");
-		quadArray.push_back(quad('+',$1->name,x,$1->name));
+		quadArray.push_back(quad($1->name,$$->name));
+		quadArray.push_back(quad('+',$$->name,x,$1->name));
 	}
 	| postfix_expression DEC_OP
 	{
@@ -250,7 +252,8 @@ postfix_expression
 		$$->update($1);
 		quadArray.push_back(quad($$->name,$1->name));
 		string x("1");
-		quadArray.push_back(quad('-',$1->name,x,$1->name));
+		quadArray.push_back(quad($1->name,$$->name));
+		quadArray.push_back(quad('-',$$->name,x,$1->name));
 	}
 	;
 
@@ -417,33 +420,89 @@ equality_expression
 		$$ = $1;
 	}
 	| equality_expression EQ_OP relational_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		$$->trueList = makeList(quadArray.size());
+		$$->falseList = makeList(quadArray.size()+1);
+		quadArray.push_back(quad(EQOP, $1->name, $3->name, "...."));	
+		quadArray.push_back(quad(GOTOV,"..."));	
+	}
 	| equality_expression NE_OP relational_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		$$->trueList = makeList(quadArray.size());
+		$$->falseList = makeList(quadArray.size()+1);
+		quadArray.push_back(quad(NEQOP, $1->name, $3->name, "...."));	
+		quadArray.push_back(quad(GOTOV,"..."));	
+	}
 	;
 
 
 and_expression
 	: equality_expression
-	| and_expression '&' M1 equality_expression
+	{
+		$$ = $1;
+	}
+	| and_expression '&' equality_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad('&', $1->name, $3->name, $$->name));	
+	}
 	;
 
 exclusive_or_expression
 	: and_expression
+	{
+		$$ = $1;
+	}
 	| exclusive_or_expression '^' and_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad('^', $1->name, $3->name, $$->name));
+	}
 	;
 
 inclusive_or_expression
 	: exclusive_or_expression
+	{
+		$$ = $1;
+	}
 	| inclusive_or_expression '|' exclusive_or_expression
+	{
+		$$ = symtab->symbolTable::gentemp(*symtab);
+		$$->update($1);
+		quadArray.push_back(quad('|', $1->name, $3->name, $$->name));
+	}
 	;
 
 logical_and_expression
 	: inclusive_or_expression
-	| logical_and_expression AND_OP inclusive_or_expression
+	{
+		$$ = $1;
+	}
+	| logical_and_expression AND_OP M1 inclusive_or_expression
+	{
+		backpatch($1->trueList,$3+2);
+		$$->trueList = $4->trueList;
+		$$->falseList = merge($1->falseList,$4->falseList);		
+	}
 	;
 
 logical_or_expression
 	: logical_and_expression
-	| logical_or_expression OR_OP logical_and_expression
+	{
+		$$ = $1;
+	}
+	| logical_or_expression OR_OP M1 logical_and_expression
+	{
+		backpatch($1->falseList,$3+2);
+		$$->trueList = $4->falseList;
+		$$->falseList = merge($1->trueList,$4->trueList);	
+	}
 	;
 
 conditional_expression

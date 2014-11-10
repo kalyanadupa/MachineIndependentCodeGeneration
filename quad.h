@@ -15,6 +15,8 @@ enum{
 	GOTOV,
 	PARAM,
 	RETURNV,
+	EQOP,
+	NEQOP,
 	CALL
 };
 

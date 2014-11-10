@@ -76,12 +76,12 @@ State 149 conflicts: 1 shift/reduce
 State 158 conflicts: 1 shift/reduce
 State 159 conflicts: 1 shift/reduce
 State 202 conflicts: 1 shift/reduce
-State 213 conflicts: 1 shift/reduce
 State 214 conflicts: 1 shift/reduce
-State 222 conflicts: 1 reduce/reduce
-State 223 conflicts: 1 shift/reduce
-State 233 conflicts: 1 shift/reduce
-State 237 conflicts: 1 shift/reduce
+State 215 conflicts: 1 shift/reduce
+State 223 conflicts: 1 reduce/reduce
+State 224 conflicts: 1 shift/reduce
+State 234 conflicts: 1 shift/reduce
+State 238 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -142,7 +142,7 @@ Grammar
    40                    | equality_expression NE_OP relational_expression
 
    41 and_expression: equality_expression
-   42               | and_expression '&' M1 equality_expression
+   42               | and_expression '&' equality_expression
 
    43 exclusive_or_expression: and_expression
    44                        | exclusive_or_expression '^' and_expression
@@ -151,10 +151,10 @@ Grammar
    46                        | inclusive_or_expression '|' exclusive_or_expression
 
    47 logical_and_expression: inclusive_or_expression
-   48                       | logical_and_expression AND_OP inclusive_or_expression
+   48                       | logical_and_expression AND_OP M1 inclusive_or_expression
 
    49 logical_or_expression: logical_and_expression
-   50                      | logical_or_expression OR_OP logical_and_expression
+   50                      | logical_or_expression OR_OP M1 logical_and_expression
 
    51 conditional_expression: logical_or_expression
    52                       | logical_or_expression '?' expression ':' conditional_expression
@@ -376,7 +376,7 @@ Nonterminals, with rules where they appear
 $accept (91)
     on left: 0
 M1 (92)
-    on left: 1, on right: 42 112 119 120 122 123 125
+    on left: 1, on right: 48 50 112 119 120 122 123 125
 N1 (93)
     on left: 2, on right: 119 125
 primary_expression (94)
@@ -1337,7 +1337,7 @@ State 63
 
 State 64
 
-   42 and_expression: and_expression . '&' M1 equality_expression
+   42 and_expression: and_expression . '&' equality_expression
    43 exclusive_or_expression: and_expression .
 
     '&'  shift, and go to state 141
@@ -1367,7 +1367,7 @@ State 66
 
 State 67
 
-   48 logical_and_expression: logical_and_expression . AND_OP inclusive_or_expression
+   48 logical_and_expression: logical_and_expression . AND_OP M1 inclusive_or_expression
    49 logical_or_expression: logical_and_expression .
 
     AND_OP  shift, and go to state 144
@@ -1377,7 +1377,7 @@ State 67
 
 State 68
 
-   50 logical_or_expression: logical_or_expression . OR_OP logical_and_expression
+   50 logical_or_expression: logical_or_expression . OR_OP M1 logical_and_expression
    51 conditional_expression: logical_or_expression .
    52                       | logical_or_expression . '?' expression ':' conditional_expression
 
@@ -2314,11 +2314,26 @@ State 140
 
 State 141
 
-   42 and_expression: and_expression '&' . M1 equality_expression
+   42 and_expression: and_expression '&' . equality_expression
 
-    $default  reduce using rule 1 (M1)
+    IDENTIFIER          shift, and go to state 5
+    INTEGER_CONSTANT    shift, and go to state 47
+    FLOATING_CONSTANT   shift, and go to state 48
+    CHARACTER_CONSTANT  shift, and go to state 49
+    STRING_LITERAL      shift, and go to state 50
+    '('                 shift, and go to state 51
 
-    M1  go to state 188
+    primary_expression         go to state 54
+    CONSTANT                   go to state 55
+    postfix_expression         go to state 56
+    unary_expression           go to state 174
+    cast_expression            go to state 58
+    multiplicative_expression  go to state 59
+    additive_expression        go to state 60
+    shift_expression           go to state 61
+    relational_expression      go to state 62
+    equality_expression        go to state 188
+    id_var                     go to state 73
 
 
 State 142
@@ -2374,57 +2389,20 @@ State 143
 
 State 144
 
-   48 logical_and_expression: logical_and_expression AND_OP . inclusive_or_expression
+   48 logical_and_expression: logical_and_expression AND_OP . M1 inclusive_or_expression
 
-    IDENTIFIER          shift, and go to state 5
-    INTEGER_CONSTANT    shift, and go to state 47
-    FLOATING_CONSTANT   shift, and go to state 48
-    CHARACTER_CONSTANT  shift, and go to state 49
-    STRING_LITERAL      shift, and go to state 50
-    '('                 shift, and go to state 51
+    $default  reduce using rule 1 (M1)
 
-    primary_expression         go to state 54
-    CONSTANT                   go to state 55
-    postfix_expression         go to state 56
-    unary_expression           go to state 174
-    cast_expression            go to state 58
-    multiplicative_expression  go to state 59
-    additive_expression        go to state 60
-    shift_expression           go to state 61
-    relational_expression      go to state 62
-    equality_expression        go to state 63
-    and_expression             go to state 64
-    exclusive_or_expression    go to state 65
-    inclusive_or_expression    go to state 191
-    id_var                     go to state 73
+    M1  go to state 191
 
 
 State 145
 
-   50 logical_or_expression: logical_or_expression OR_OP . logical_and_expression
+   50 logical_or_expression: logical_or_expression OR_OP . M1 logical_and_expression
 
-    IDENTIFIER          shift, and go to state 5
-    INTEGER_CONSTANT    shift, and go to state 47
-    FLOATING_CONSTANT   shift, and go to state 48
-    CHARACTER_CONSTANT  shift, and go to state 49
-    STRING_LITERAL      shift, and go to state 50
-    '('                 shift, and go to state 51
+    $default  reduce using rule 1 (M1)
 
-    primary_expression         go to state 54
-    CONSTANT                   go to state 55
-    postfix_expression         go to state 56
-    unary_expression           go to state 174
-    cast_expression            go to state 58
-    multiplicative_expression  go to state 59
-    additive_expression        go to state 60
-    shift_expression           go to state 61
-    relational_expression      go to state 62
-    equality_expression        go to state 63
-    and_expression             go to state 64
-    exclusive_or_expression    go to state 65
-    inclusive_or_expression    go to state 66
-    logical_and_expression     go to state 192
-    id_var                     go to state 73
+    M1  go to state 192
 
 
 State 146
@@ -2975,31 +2953,19 @@ State 187
 
 State 188
 
-   42 and_expression: and_expression '&' M1 . equality_expression
+   39 equality_expression: equality_expression . EQ_OP relational_expression
+   40                    | equality_expression . NE_OP relational_expression
+   42 and_expression: and_expression '&' equality_expression .
 
-    IDENTIFIER          shift, and go to state 5
-    INTEGER_CONSTANT    shift, and go to state 47
-    FLOATING_CONSTANT   shift, and go to state 48
-    CHARACTER_CONSTANT  shift, and go to state 49
-    STRING_LITERAL      shift, and go to state 50
-    '('                 shift, and go to state 51
+    EQ_OP  shift, and go to state 139
+    NE_OP  shift, and go to state 140
 
-    primary_expression         go to state 54
-    CONSTANT                   go to state 55
-    postfix_expression         go to state 56
-    unary_expression           go to state 174
-    cast_expression            go to state 58
-    multiplicative_expression  go to state 59
-    additive_expression        go to state 60
-    shift_expression           go to state 61
-    relational_expression      go to state 62
-    equality_expression        go to state 208
-    id_var                     go to state 73
+    $default  reduce using rule 42 (and_expression)
 
 
 State 189
 
-   42 and_expression: and_expression . '&' M1 equality_expression
+   42 and_expression: and_expression . '&' equality_expression
    44 exclusive_or_expression: exclusive_or_expression '^' and_expression .
 
     '&'  shift, and go to state 141
@@ -3019,22 +2985,57 @@ State 190
 
 State 191
 
-   46 inclusive_or_expression: inclusive_or_expression . '|' exclusive_or_expression
-   48 logical_and_expression: logical_and_expression AND_OP inclusive_or_expression .
+   48 logical_and_expression: logical_and_expression AND_OP M1 . inclusive_or_expression
 
-    '|'  shift, and go to state 143
+    IDENTIFIER          shift, and go to state 5
+    INTEGER_CONSTANT    shift, and go to state 47
+    FLOATING_CONSTANT   shift, and go to state 48
+    CHARACTER_CONSTANT  shift, and go to state 49
+    STRING_LITERAL      shift, and go to state 50
+    '('                 shift, and go to state 51
 
-    $default  reduce using rule 48 (logical_and_expression)
+    primary_expression         go to state 54
+    CONSTANT                   go to state 55
+    postfix_expression         go to state 56
+    unary_expression           go to state 174
+    cast_expression            go to state 58
+    multiplicative_expression  go to state 59
+    additive_expression        go to state 60
+    shift_expression           go to state 61
+    relational_expression      go to state 62
+    equality_expression        go to state 63
+    and_expression             go to state 64
+    exclusive_or_expression    go to state 65
+    inclusive_or_expression    go to state 208
+    id_var                     go to state 73
 
 
 State 192
 
-   48 logical_and_expression: logical_and_expression . AND_OP inclusive_or_expression
-   50 logical_or_expression: logical_or_expression OR_OP logical_and_expression .
+   50 logical_or_expression: logical_or_expression OR_OP M1 . logical_and_expression
 
-    AND_OP  shift, and go to state 144
+    IDENTIFIER          shift, and go to state 5
+    INTEGER_CONSTANT    shift, and go to state 47
+    FLOATING_CONSTANT   shift, and go to state 48
+    CHARACTER_CONSTANT  shift, and go to state 49
+    STRING_LITERAL      shift, and go to state 50
+    '('                 shift, and go to state 51
 
-    $default  reduce using rule 50 (logical_or_expression)
+    primary_expression         go to state 54
+    CONSTANT                   go to state 55
+    postfix_expression         go to state 56
+    unary_expression           go to state 174
+    cast_expression            go to state 58
+    multiplicative_expression  go to state 59
+    additive_expression        go to state 60
+    shift_expression           go to state 61
+    relational_expression      go to state 62
+    equality_expression        go to state 63
+    and_expression             go to state 64
+    exclusive_or_expression    go to state 65
+    inclusive_or_expression    go to state 66
+    logical_and_expression     go to state 209
+    id_var                     go to state 73
 
 
 State 193
@@ -3043,7 +3044,7 @@ State 193
    67 expression: expression . ',' assignment_expression
 
     ','  shift, and go to state 147
-    ':'  shift, and go to state 209
+    ':'  shift, and go to state 210
 
 
 State 194
@@ -3068,7 +3069,7 @@ State 196
     '('         shift, and go to state 6
     '*'         shift, and go to state 7
 
-    declarator         go to state 210
+    declarator         go to state 211
     direct_declarator  go to state 12
     pointer            go to state 13
     id_var             go to state 14
@@ -3085,7 +3086,7 @@ State 198
 
   123 iteration_statement: DO M1 statement M1 . WHILE '(' expression ')' ';'
 
-    WHILE  shift, and go to state 211
+    WHILE  shift, and go to state 212
 
 
 State 199
@@ -3094,14 +3095,14 @@ State 199
 
     $default  reduce using rule 1 (M1)
 
-    M1  go to state 212
+    M1  go to state 213
 
 
 State 200
 
   124 iteration_statement: FOR '(' expression_statement expression_statement . ')' statement
 
-    ')'  shift, and go to state 213
+    ')'  shift, and go to state 214
 
 
 State 201
@@ -3111,7 +3112,7 @@ State 201
 
     $default  reduce using rule 1 (M1)
 
-    M1  go to state 214
+    M1  go to state 215
 
 
 State 202
@@ -3154,7 +3155,7 @@ State 202
     assignment_expression      go to state 70
     expression                 go to state 71
     id_var                     go to state 73
-    statement                  go to state 215
+    statement                  go to state 216
     compound_statement         go to state 75
     expression_statement       go to state 79
     expression_opt             go to state 80
@@ -3168,7 +3169,7 @@ State 203
    67 expression: expression . ',' assignment_expression
   122 iteration_statement: WHILE M1 '(' expression . ')' M1 statement
 
-    ')'  shift, and go to state 216
+    ')'  shift, and go to state 217
     ','  shift, and go to state 147
 
 
@@ -3213,7 +3214,7 @@ State 206
     logical_and_expression     go to state 67
     logical_or_expression      go to state 68
     conditional_expression     go to state 69
-    assignment_expression      go to state 217
+    assignment_expression      go to state 218
     id_var                     go to state 73
 
 
@@ -3226,17 +3227,25 @@ State 207
 
 State 208
 
-   39 equality_expression: equality_expression . EQ_OP relational_expression
-   40                    | equality_expression . NE_OP relational_expression
-   42 and_expression: and_expression '&' M1 equality_expression .
+   46 inclusive_or_expression: inclusive_or_expression . '|' exclusive_or_expression
+   48 logical_and_expression: logical_and_expression AND_OP M1 inclusive_or_expression .
 
-    EQ_OP  shift, and go to state 139
-    NE_OP  shift, and go to state 140
+    '|'  shift, and go to state 143
 
-    $default  reduce using rule 42 (and_expression)
+    $default  reduce using rule 48 (logical_and_expression)
 
 
 State 209
+
+   48 logical_and_expression: logical_and_expression . AND_OP M1 inclusive_or_expression
+   50 logical_or_expression: logical_or_expression OR_OP M1 logical_and_expression .
+
+    AND_OP  shift, and go to state 144
+
+    $default  reduce using rule 50 (logical_or_expression)
+
+
+State 210
 
    52 conditional_expression: logical_or_expression '?' expression ':' . conditional_expression
 
@@ -3262,25 +3271,25 @@ State 209
     inclusive_or_expression    go to state 66
     logical_and_expression     go to state 67
     logical_or_expression      go to state 68
-    conditional_expression     go to state 218
+    conditional_expression     go to state 219
     id_var                     go to state 73
 
 
-State 210
+State 211
 
    96 parameter_list: parameter_list ',' declaration_specifiers declarator .
 
     $default  reduce using rule 96 (parameter_list)
 
 
-State 211
+State 212
 
   123 iteration_statement: DO M1 statement M1 WHILE . '(' expression ')' ';'
 
-    '('  shift, and go to state 219
+    '('  shift, and go to state 220
 
 
-State 212
+State 213
 
   125 iteration_statement: FOR '(' expression ';' M1 . expression ';' M1 expression N1 ')' M1 statement
 
@@ -3308,63 +3317,13 @@ State 212
     logical_or_expression      go to state 68
     conditional_expression     go to state 69
     assignment_expression      go to state 70
-    expression                 go to state 220
+    expression                 go to state 221
     id_var                     go to state 73
-
-
-State 213
-
-  124 iteration_statement: FOR '(' expression_statement expression_statement ')' . statement
-
-    DO                  shift, and go to state 41
-    FOR                 shift, and go to state 42
-    IF                  shift, and go to state 43
-    RETURN              shift, and go to state 44
-    SWITCH              shift, and go to state 45
-    WHILE               shift, and go to state 46
-    IDENTIFIER          shift, and go to state 5
-    INTEGER_CONSTANT    shift, and go to state 47
-    FLOATING_CONSTANT   shift, and go to state 48
-    CHARACTER_CONSTANT  shift, and go to state 49
-    STRING_LITERAL      shift, and go to state 50
-    '('                 shift, and go to state 51
-    ';'                 shift, and go to state 52
-    '{'                 shift, and go to state 25
-
-    ';'  [reduce using rule 118 (expression_opt)]
-
-    primary_expression         go to state 54
-    CONSTANT                   go to state 55
-    postfix_expression         go to state 56
-    unary_expression           go to state 57
-    cast_expression            go to state 58
-    multiplicative_expression  go to state 59
-    additive_expression        go to state 60
-    shift_expression           go to state 61
-    relational_expression      go to state 62
-    equality_expression        go to state 63
-    and_expression             go to state 64
-    exclusive_or_expression    go to state 65
-    inclusive_or_expression    go to state 66
-    logical_and_expression     go to state 67
-    logical_or_expression      go to state 68
-    conditional_expression     go to state 69
-    assignment_expression      go to state 70
-    expression                 go to state 71
-    id_var                     go to state 73
-    statement                  go to state 221
-    compound_statement         go to state 75
-    expression_statement       go to state 79
-    expression_opt             go to state 80
-    selection_statement        go to state 81
-    iteration_statement        go to state 82
-    jump_statement             go to state 83
 
 
 State 214
 
-  119 selection_statement: IF '(' expression ')' M1 . statement N1 ELSE M1 statement
-  120                    | IF '(' expression ')' M1 . statement
+  124 iteration_statement: FOR '(' expression_statement expression_statement ')' . statement
 
     DO                  shift, and go to state 41
     FOR                 shift, and go to state 42
@@ -3413,35 +3372,85 @@ State 214
 
 State 215
 
+  119 selection_statement: IF '(' expression ')' M1 . statement N1 ELSE M1 statement
+  120                    | IF '(' expression ')' M1 . statement
+
+    DO                  shift, and go to state 41
+    FOR                 shift, and go to state 42
+    IF                  shift, and go to state 43
+    RETURN              shift, and go to state 44
+    SWITCH              shift, and go to state 45
+    WHILE               shift, and go to state 46
+    IDENTIFIER          shift, and go to state 5
+    INTEGER_CONSTANT    shift, and go to state 47
+    FLOATING_CONSTANT   shift, and go to state 48
+    CHARACTER_CONSTANT  shift, and go to state 49
+    STRING_LITERAL      shift, and go to state 50
+    '('                 shift, and go to state 51
+    ';'                 shift, and go to state 52
+    '{'                 shift, and go to state 25
+
+    ';'  [reduce using rule 118 (expression_opt)]
+
+    primary_expression         go to state 54
+    CONSTANT                   go to state 55
+    postfix_expression         go to state 56
+    unary_expression           go to state 57
+    cast_expression            go to state 58
+    multiplicative_expression  go to state 59
+    additive_expression        go to state 60
+    shift_expression           go to state 61
+    relational_expression      go to state 62
+    equality_expression        go to state 63
+    and_expression             go to state 64
+    exclusive_or_expression    go to state 65
+    inclusive_or_expression    go to state 66
+    logical_and_expression     go to state 67
+    logical_or_expression      go to state 68
+    conditional_expression     go to state 69
+    assignment_expression      go to state 70
+    expression                 go to state 71
+    id_var                     go to state 73
+    statement                  go to state 223
+    compound_statement         go to state 75
+    expression_statement       go to state 79
+    expression_opt             go to state 80
+    selection_statement        go to state 81
+    iteration_statement        go to state 82
+    jump_statement             go to state 83
+
+
+State 216
+
   121 selection_statement: SWITCH '(' expression ')' statement .
 
     $default  reduce using rule 121 (selection_statement)
 
 
-State 216
+State 217
 
   122 iteration_statement: WHILE M1 '(' expression ')' . M1 statement
 
     $default  reduce using rule 1 (M1)
 
-    M1  go to state 223
+    M1  go to state 224
 
 
-State 217
+State 218
 
    19 argument_expression_list: argument_expression_list ',' assignment_expression .
 
     $default  reduce using rule 19 (argument_expression_list)
 
 
-State 218
+State 219
 
    52 conditional_expression: logical_or_expression '?' expression ':' conditional_expression .
 
     $default  reduce using rule 52 (conditional_expression)
 
 
-State 219
+State 220
 
   123 iteration_statement: DO M1 statement M1 WHILE '(' . expression ')' ';'
 
@@ -3469,27 +3478,27 @@ State 219
     logical_or_expression      go to state 68
     conditional_expression     go to state 69
     assignment_expression      go to state 70
-    expression                 go to state 224
+    expression                 go to state 225
     id_var                     go to state 73
 
 
-State 220
+State 221
 
    67 expression: expression . ',' assignment_expression
   125 iteration_statement: FOR '(' expression ';' M1 expression . ';' M1 expression N1 ')' M1 statement
 
     ','  shift, and go to state 147
-    ';'  shift, and go to state 225
+    ';'  shift, and go to state 226
 
 
-State 221
+State 222
 
   124 iteration_statement: FOR '(' expression_statement expression_statement ')' statement .
 
     $default  reduce using rule 124 (iteration_statement)
 
 
-State 222
+State 223
 
   119 selection_statement: IF '(' expression ')' M1 statement . N1 ELSE M1 statement
   120                    | IF '(' expression ')' M1 statement .
@@ -3498,10 +3507,10 @@ State 222
     ELSE      [reduce using rule 120 (selection_statement)]
     $default  reduce using rule 120 (selection_statement)
 
-    N1  go to state 226
+    N1  go to state 227
 
 
-State 223
+State 224
 
   122 iteration_statement: WHILE M1 '(' expression ')' M1 . statement
 
@@ -3541,7 +3550,7 @@ State 223
     assignment_expression      go to state 70
     expression                 go to state 71
     id_var                     go to state 73
-    statement                  go to state 227
+    statement                  go to state 228
     compound_statement         go to state 75
     expression_statement       go to state 79
     expression_opt             go to state 80
@@ -3550,46 +3559,46 @@ State 223
     jump_statement             go to state 83
 
 
-State 224
+State 225
 
    67 expression: expression . ',' assignment_expression
   123 iteration_statement: DO M1 statement M1 WHILE '(' expression . ')' ';'
 
-    ')'  shift, and go to state 228
+    ')'  shift, and go to state 229
     ','  shift, and go to state 147
 
 
-State 225
+State 226
 
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' . M1 expression N1 ')' M1 statement
 
     $default  reduce using rule 1 (M1)
 
-    M1  go to state 229
-
-
-State 226
-
-  119 selection_statement: IF '(' expression ')' M1 statement N1 . ELSE M1 statement
-
-    ELSE  shift, and go to state 230
+    M1  go to state 230
 
 
 State 227
+
+  119 selection_statement: IF '(' expression ')' M1 statement N1 . ELSE M1 statement
+
+    ELSE  shift, and go to state 231
+
+
+State 228
 
   122 iteration_statement: WHILE M1 '(' expression ')' M1 statement .
 
     $default  reduce using rule 122 (iteration_statement)
 
 
-State 228
+State 229
 
   123 iteration_statement: DO M1 statement M1 WHILE '(' expression ')' . ';'
 
-    ';'  shift, and go to state 231
+    ';'  shift, and go to state 232
 
 
-State 229
+State 230
 
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' M1 . expression N1 ')' M1 statement
 
@@ -3617,27 +3626,27 @@ State 229
     logical_or_expression      go to state 68
     conditional_expression     go to state 69
     assignment_expression      go to state 70
-    expression                 go to state 232
+    expression                 go to state 233
     id_var                     go to state 73
 
 
-State 230
+State 231
 
   119 selection_statement: IF '(' expression ')' M1 statement N1 ELSE . M1 statement
 
     $default  reduce using rule 1 (M1)
 
-    M1  go to state 233
+    M1  go to state 234
 
 
-State 231
+State 232
 
   123 iteration_statement: DO M1 statement M1 WHILE '(' expression ')' ';' .
 
     $default  reduce using rule 123 (iteration_statement)
 
 
-State 232
+State 233
 
    67 expression: expression . ',' assignment_expression
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' M1 expression . N1 ')' M1 statement
@@ -3646,10 +3655,10 @@ State 232
 
     $default  reduce using rule 2 (N1)
 
-    N1  go to state 234
+    N1  go to state 235
 
 
-State 233
+State 234
 
   119 selection_statement: IF '(' expression ')' M1 statement N1 ELSE M1 . statement
 
@@ -3689,7 +3698,7 @@ State 233
     assignment_expression      go to state 70
     expression                 go to state 71
     id_var                     go to state 73
-    statement                  go to state 235
+    statement                  go to state 236
     compound_statement         go to state 75
     expression_statement       go to state 79
     expression_opt             go to state 80
@@ -3698,30 +3707,30 @@ State 233
     jump_statement             go to state 83
 
 
-State 234
+State 235
 
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' M1 expression N1 . ')' M1 statement
 
-    ')'  shift, and go to state 236
+    ')'  shift, and go to state 237
 
 
-State 235
+State 236
 
   119 selection_statement: IF '(' expression ')' M1 statement N1 ELSE M1 statement .
 
     $default  reduce using rule 119 (selection_statement)
 
 
-State 236
+State 237
 
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' M1 expression N1 ')' . M1 statement
 
     $default  reduce using rule 1 (M1)
 
-    M1  go to state 237
+    M1  go to state 238
 
 
-State 237
+State 238
 
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' M1 expression N1 ')' M1 . statement
 
@@ -3761,7 +3770,7 @@ State 237
     assignment_expression      go to state 70
     expression                 go to state 71
     id_var                     go to state 73
-    statement                  go to state 238
+    statement                  go to state 239
     compound_statement         go to state 75
     expression_statement       go to state 79
     expression_opt             go to state 80
@@ -3770,7 +3779,7 @@ State 237
     jump_statement             go to state 83
 
 
-State 238
+State 239
 
   125 iteration_statement: FOR '(' expression ';' M1 expression ';' M1 expression N1 ')' M1 statement .
 

@@ -8,4 +8,7 @@ int main()
 		c = 3;
 		i = c;
 	}
+	for(i = 0;i < a; i++){
+		c = i + 3;
+	}
 }

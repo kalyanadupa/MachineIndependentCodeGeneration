@@ -161,7 +161,7 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 			case LEQ:
 			case GEQ:
 			case GOTOV:
-				cout<<"**"<<"added "<<q.result<<'\n';
+				//cout<<"**"<<"added "<<q.result<<'\n';
 				gotoArray.push_back(q.result);
 				break;
 
