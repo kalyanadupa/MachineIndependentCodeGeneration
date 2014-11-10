@@ -159,7 +159,14 @@ int retSize(const typeV &t){
 }
 
 
+
 void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
+	ofstream myfile;
+	  myfile.open ("ass6_12CS30001_test_3.asm");
+	myfile<<"    "<<".file   \"ass6_12CS30001_test_3.c\""<<'\n';
+	myfile<<"    "<<".text"<<'\n';
+	myfile<<"    "<<".globl  main"<<'\n';
+	myfile<<"    "<<".type   main, @function"<<'\n';  
 	std::vector<string> gotoArray;
 	for(int i = 0;i < quadArray.size();i++){
 		quad q = quadArray[i];
@@ -169,7 +176,7 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 			case LEQ:
 			case GEQ:
 			case GOTOV:
-				//cout<<"**"<<"added "<<q.result<<'\n';
+				//myfile<<"**"<<"added "<<q.result<<'\n';
 				gotoArray.push_back(q.result);
 				break;
 
@@ -179,54 +186,54 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 	for(int i = tcgArray.size()-1; i > 0;i --){
 		tcg t = tcgArray[i];
 		j = j - t.size;
-		cout<<"_"<<t.name<<"$ = "<<j<<'\n';
+		myfile<<"_"<<t.name<<"$ = "<<j<<'\n';
 	}
-	cout<<"main:"<<'\n';
-	cout<<"    "<<"pushl %ebp"<<'\n';
-	cout<<"    "<<"movl %esp, %ebp"<<'\n';
+	myfile<<"main:"<<'\n';
+	myfile<<"    "<<"pushl %ebp"<<'\n';
+	myfile<<"    "<<"movl %esp, %ebp"<<'\n';
 	j = j*-1;
-	cout<<"    "<<"subl $"<<j<<", %esp"<<'\n';
+	myfile<<"    "<<"subl $"<<j<<", %esp"<<'\n';
 	for(int i = 0;i < quadArray.size();i++){
 		quad q = quadArray[i];
 		int flag = 1;
-		//cout<<"i = "<<i<<'\t';
+		//myfile<<"i = "<<i<<'\t';
 		for(int k = 0;k < gotoArray.size();k++){
 
 			int numb;
 			istringstream ( gotoArray[k] ) >> numb;
-			//cout<<" numb = "<<numb<<'\n';
+			//myfile<<" numb = "<<numb<<'\n';
 			if(i == numb){
-				//cout<<"**"<<"In here"<<'\n';
+				//myfile<<"**"<<"In here"<<'\n';
 				flag = 0;
 			}
 		}
 		if(flag == 0){
-			cout<<".L"<<i<<":"<<'\n';
+			myfile<<".L"<<i<<":"<<'\n';
 		}
 		if((q.op == LET) || (q.op == GRT) || (q.op == LEQ) || (q.op == GEQ) || (q.op == GOTOV)){
 			switch(q.op){
 				case LET:
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"jge .L"<<q.result<<'\n';
+					myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"jge .L"<<q.result<<'\n';
 					break;
 				case GRT:
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"jle .L"<<q.result<<'\n';
+					myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"jle .L"<<q.result<<'\n';
 					break;
 				case LEQ:
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"jg .L"<<q.result<<'\n';
+					myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"jg .L"<<q.result<<'\n';
 					break;
 				case GEQ:
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"jl .L"<<q.result<<'\n';
+					myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"jl .L"<<q.result<<'\n';
 					break;
 				case GOTOV:
-					cout<<"    "<<"jmp .L"<<q.result<<'\n';
+					myfile<<"    "<<"jmp .L"<<q.result<<'\n';
 					gotoArray.push_back(q.result);
 					break;
 
@@ -235,69 +242,76 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 		else{
 			if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
 				if(isdigit(q.arg1[0])){
-					//cout<<'\n'<<"CS 1"<<'\n';
-					cout<<"    "<<"movl $"<<q.arg1<<", _"<<q.result<<"$(%ebp)"<<'\n';
+					//myfile<<'\n'<<"CS 1"<<'\n';
+					myfile<<"    "<<"movl $"<<q.arg1<<", _"<<q.result<<"$(%ebp)"<<'\n';
 				}
 				else if((q.arg1[0])== '-'){
-					//cout<<'\n'<<"CS 3"<<'\n';
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"negl "<<"%eax"<<'\n';
-					cout<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';			
+					//myfile<<'\n'<<"CS 3"<<'\n';
+					myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"negl "<<"%eax"<<'\n';
+					myfile<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';			
 				}
 				else{
-					//cout<<'\n'<<'\n'<<'\n'<<"CS 2"<<'\n';
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';
+					//myfile<<'\n'<<'\n'<<'\n'<<"CS 2"<<'\n';
+					myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					myfile<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';
 				}
 			}
 			if((q.arg2.compare("null") != 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
 				switch(q.op){
 					case '+':
-						//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"addl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						//myfile<<'\n'<<'\n'<<"CS 4"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"addl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;
 					case '-':
-						//cout<<'\n'<<"CS 5"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"subl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						//myfile<<'\n'<<"CS 5"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"subl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;
 					case '*':
-						//cout<<'\n'<<"CS 6"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"imull _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						//myfile<<'\n'<<"CS 6"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"imull _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;
 					case '/':
-						//cout<<'\n'<<'\n'<<"CS 7"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"cltd"<<'\n';
-						cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						//myfile<<'\n'<<'\n'<<"CS 7"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"cltd"<<'\n';
+						myfile<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;
 					case '%':
-						//cout<<'\n'<<"CS 8"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"cltd"<<'\n';
-						cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						//myfile<<'\n'<<"CS 8"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"cltd"<<'\n';
+						myfile<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;
-					case 'UP':
-						//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"addl _"<<"$1, "<<"%eax"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+					case UP:
+						//myfile<<'\n'<<'\n'<<"CS 4"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"addl _"<<"$1, "<<"%eax"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;
-					case 'UM':
-						//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
-						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-						cout<<"    "<<"subl _"<<"$1, "<<"%eax"<<'\n';
-						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+					case UM:
+						//myfile<<'\n'<<'\n'<<"CS 4"<<'\n';
+						myfile<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						myfile<<"    "<<"subl _"<<"$1, "<<"%eax"<<'\n';
+						myfile<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
 						break;						
 				}			
 			}
 		}
 	}
+	myfile<<".L"<<quadArray.size()<<':'<<'\n';
+	myfile<<"    "<<"leave"<<'\n';
+	myfile<<"    "<<"ret"<<'\n';
+	myfile<<"    .size	main, .-main"<<'\n';
+	myfile<<"    .ident	\"GCC: (Ubuntu/Linaro 4.8.1-10ubuntu9) 4.8.1\""<<'\n';
+	myfile<<"    .section	.note.GNU-stack,\"\",@progbits"<<'\n';
+	myfile.close();
 }

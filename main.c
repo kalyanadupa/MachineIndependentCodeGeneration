@@ -34,16 +34,8 @@ main(){
 		quad q  = quadArray[i];
 		q.emit(q);
 	}
-	cout<<"    "<<".file   \"test.c\""<<'\n';
-	cout<<"    "<<".text"<<'\n';
-	cout<<"    "<<".globl  main"<<'\n';
-	cout<<"    "<<".type   main, @function"<<'\n';
 	
 	printTCG(quadArray,tcgArray);
-	cout<<".L"<<quadArray.size()<<':'<<'\n';
-	cout<<"    "<<"leave"<<'\n';
-	cout<<"    "<<"ret"<<'\n';
-
 	
 
 }
