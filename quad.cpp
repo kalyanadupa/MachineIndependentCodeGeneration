@@ -64,44 +64,6 @@ void quad::emit(const quad &q){
 
 
 
-// void quad::emit(const quad &q){
-
-// 	if(q.arg2.compare("null") != 0){
-// 		switch(q.op){
-// 			case LET:
-// 				cout<<q.result<<"="<<q.arg1<<" < "<<q.arg2<<'\n';
-// 				break;
-// 			case GRT:
-// 				cout<<q.result<<"="<<q.arg1<<" > "<<q.arg2<<'\n';
-// 				break;
-// 			case LEQ:
-// 				cout<<q.result<<"="<<q.arg1<<" <= "<<q.arg2<<'\n';
-// 				break;
-// 			case GEQ:
-// 				cout<<q.result<<"="<<q.arg1<<" >= "<<q.arg2<<'\n';
-// 				break;
-// 			case SHLE:
-// 				cout<<q.result<<"="<<q.arg1<<" >> "<<q.arg2<<'\n';
-// 				break;
-// 			case SHRT:
-// 				cout<<q.result<<"="<<q.arg1<<" << "<<q.arg2<<'\n';
-// 				break;
-// 			default:
-// 				cout<<q.result<<"="<<q.arg1<<" ";
-// 				printf("%c ",q.op );
-// 				cout<<q.arg2<<'\n';	
-// 		}
-// 	}
-// 	else if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") == 0))
-// 		cout<<"goto "<<q.result;
-	
-// 	else
-// 		cout<<q.result<<"="<<q.result<<"\n";
-	
-// }
-
-
-
 
 indexList makeList(int i){
 	indexList newList = new std::vector<int>();;
@@ -190,6 +152,20 @@ int retSize(const typeV &t){
 
 
 void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
+	std::vector<string> gotoArray;
+	for(int i = 0;i < quadArray.size();i++){
+		quad q = quadArray[i];
+		switch(q.op){
+			case LET:
+			case GRT:
+			case LEQ:
+			case GEQ:
+			case GOTOV:
+				gotoArray.push_back(q.result);
+				break;
+
+		}		
+	}
 	int j = 0;
 	for(int i = tcgArray.size()-1; i > 0;i --){
 		tcg t = tcgArray[i];
@@ -203,58 +179,87 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 	cout<<"    "<<"subl $"<<j<<", %esp"<<'\n';
 	for(int i = 0;i < quadArray.size();i++){
 		quad q = quadArray[i];
-		if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
-			if(isdigit(q.arg1[0])){
-				//cout<<'\n'<<"CS 1"<<'\n';
-				cout<<"    "<<"movl $"<<q.arg1<<", _"<<q.result<<"$(%ebp)"<<'\n';
-			}
-			else if((q.arg1[0])== '-'){
-				//cout<<'\n'<<"CS 3"<<'\n';
-				cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-				cout<<"    "<<"negl "<<"%eax"<<'\n';
-				cout<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';			
-			}
-			else{
-				//cout<<'\n'<<'\n'<<'\n'<<"CS 2"<<'\n';
-				cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-				cout<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';
-			}
+		int flag = 1;
+		for(int k = 0;k < gotoArray.size();k++){
+			stringstream ss;
+			ss << i;
+			string str = ss.str();
+			if(str.compare(q.result) == 0)
+				flag = 0;
 		}
-		if((q.arg2.compare("null") != 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
+		if(flag != 0)
+			cout<<".L"<<i<<":"<<'\n';	
+		if((q.op == LET) || (q.op == GRT) || (q.op == LEQ) || (q.op == GEQ) || (q.op == GOTOV)){
 			switch(q.op){
-				case '+':
-					//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
+				case LET:
 					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"addl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+					cout<<"    "<<"cmpl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"jge .L"<<q.result<<'\n';
 					break;
-				case '-':
-					//cout<<'\n'<<"CS 5"<<'\n';
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"subl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+				case GRT:
+				case LEQ:
+				case GEQ:
+				case GOTOV:
+					cout<<"    "<<"jmp .L"<<q.result<<'\n';
+					gotoArray.push_back(q.result);
 					break;
-				case '*':
-					//cout<<'\n'<<"CS 6"<<'\n';
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"imull _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
-					break;
-				case '/':
-					//cout<<'\n'<<'\n'<<"CS 7"<<'\n';
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"cltd"<<'\n';
-					cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
-					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
-					break;
-				case '%':
-					//cout<<'\n'<<"CS 8"<<'\n';
-					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
-					cout<<"    "<<"cltd"<<'\n';
-					cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
-					cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
-					break;				
+
 			}			
+		}
+		else{
+			if((q.arg2.compare("null") == 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
+				if(isdigit(q.arg1[0])){
+					//cout<<'\n'<<"CS 1"<<'\n';
+					cout<<"    "<<"movl $"<<q.arg1<<", _"<<q.result<<"$(%ebp)"<<'\n';
+				}
+				else if((q.arg1[0])== '-'){
+					//cout<<'\n'<<"CS 3"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"negl "<<"%eax"<<'\n';
+					cout<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';			
+				}
+				else{
+					//cout<<'\n'<<'\n'<<'\n'<<"CS 2"<<'\n';
+					cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+					cout<<"    "<<"movl %eax, _"<<q.result<<"$(%ebp)"<<'\n';
+				}
+			}
+			if((q.arg2.compare("null") != 0)&&(q.arg1.compare("null") != 0)&&(q.result.compare("null") != 0)){
+				switch(q.op){
+					case '+':
+						//cout<<'\n'<<'\n'<<"CS 4"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"addl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;
+					case '-':
+						//cout<<'\n'<<"CS 5"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"subl _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;
+					case '*':
+						//cout<<'\n'<<"CS 6"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"imull _"<<q.arg2<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;
+					case '/':
+						//cout<<'\n'<<'\n'<<"CS 7"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"cltd"<<'\n';
+						cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;
+					case '%':
+						//cout<<'\n'<<"CS 8"<<'\n';
+						cout<<"    "<<"movl _"<<q.arg1<<"$(%ebp), "<<"%eax"<<'\n';
+						cout<<"    "<<"cltd"<<'\n';
+						cout<<"    "<<"idivl _"<<q.arg2<<"$(%ebp)"<<'\n';
+						cout<<"    "<<"movl "<<"%eax"<<", _"<<q.result<<"$(%ebp)"<<'\n';
+						break;				
+				}			
+			}
 		}
 	}
 }
