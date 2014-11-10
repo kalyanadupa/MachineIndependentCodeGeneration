@@ -161,6 +161,7 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 			case LEQ:
 			case GEQ:
 			case GOTOV:
+				cout<<"**"<<"added "<<q.result<<'\n';
 				gotoArray.push_back(q.result);
 				break;
 
@@ -180,15 +181,20 @@ void printTCG(std::vector<quad> &quadArray, std::vector<tcg> &tcgArray){
 	for(int i = 0;i < quadArray.size();i++){
 		quad q = quadArray[i];
 		int flag = 1;
+		//cout<<"i = "<<i<<'\t';
 		for(int k = 0;k < gotoArray.size();k++){
-			stringstream ss;
-			ss << i;
-			string str = ss.str();
-			if(str.compare(q.result) == 0)
+
+			int numb;
+			istringstream ( gotoArray[k] ) >> numb;
+			//cout<<" numb = "<<numb<<'\n';
+			if(i == numb){
+				//cout<<"**"<<"In here"<<'\n';
 				flag = 0;
+			}
 		}
-		if(flag != 0)
-			cout<<".L"<<i<<":"<<'\n';	
+		if(flag == 0){
+			cout<<".L"<<i<<":"<<'\n';
+		}
 		if((q.op == LET) || (q.op == GRT) || (q.op == LEQ) || (q.op == GEQ) || (q.op == GOTOV)){
 			switch(q.op){
 				case LET:
